@@ -24,7 +24,7 @@
 Используемая версия [golangci-lint](https://golangci-lint.run/welcome/install/#other-ci): <b>v1.62.2</b>
 ```
 $ golangci-lint version
-golangci-lint has version 1.62.2 built with go1.23.3 from 89476e7a on 2024-11-25T14:16:01Z
+golangci-lint has version 2.11.4 built with go1.26.1 from 8f3b0c7e on 2026-03-22T17:35:14Z
 ```
 
 ---

@@ -7,8 +7,8 @@ on:
 
 env:
   GO111MODULE: "on"
-  GOLANG_VERSION: ~1.23
-  GOLANGCI_LINT_VERSION: v1.63.4
+  GOLANG_VERSION: ~1.25
+  GOLANGCI_LINT_VERSION: v2.11.4
   
 jobs:
   lint:
@@ -19,15 +19,16 @@ jobs:
         run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
+          cache: false
           go-version: ${{ env.GOLANG_VERSION }}
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Linters
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v9
         with:
           version: ${{ env.GOLANGCI_LINT_VERSION }}
           working-directory: ${{ env.BRANCH }}
@@ -40,12 +41,13 @@ jobs:
         run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
+          cache: false
           go-version: ${{ env.GOLANG_VERSION }}
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Unit tests
         run: go test -v -count=1 -race -timeout=1m ./...
@@ -67,12 +69,13 @@ jobs:
     if: contains(github.ref, 'calendar')
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
+          cache: false
           go-version: ${{ env.GOLANG_VERSION }}
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: make lint
         run: make lint

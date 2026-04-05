@@ -21,6 +21,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
+          cache: false
           go-version: ${{ env.GOLANG_VERSION }}
 
       - name: Check out code
@@ -42,6 +43,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
+          cache: false
           go-version: ${{ env.GOLANG_VERSION }}
 
       - name: Check out code
@@ -67,12 +69,13 @@ jobs:
     if: contains(github.ref, 'calendar')
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
+          cache: false
           go-version: ${{ env.GOLANG_VERSION }}
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: make lint
         run: make lint

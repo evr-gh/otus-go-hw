@@ -1,4 +1,4 @@
-module github.com/fixme_my_friend/hw01_hello_otus
+module github.com/evr-gh/otus-go-hw/hw01_hello_otus
 
 go 1.25.0
 

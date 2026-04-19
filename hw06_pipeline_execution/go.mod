@@ -1,6 +1,6 @@
-module github.com/fixme_my_friend/hw06_pipeline_execution
+module github.com/evr-gh/otus-go-hw/hw06_pipeline_execution
 
-go 1.23
+go 1.25.0
 
 require github.com/stretchr/testify v1.10.0
 

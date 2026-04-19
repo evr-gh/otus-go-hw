@@ -1,3 +1,3 @@
-module github.com/fixme_my_friend/hw08_envdir_tool
+module github.com/evr-gh/otus-go-hw/hw08_envdir_tool
 
-go 1.23
+go 1.25.0

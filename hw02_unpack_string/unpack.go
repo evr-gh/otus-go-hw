@@ -19,37 +19,35 @@ func Unpack(message string) (string, error) {
 		i += sz
 
 		switch {
-			case escChrFlg:
-				escChrFlg=false
-				lastRune=r
-			case r == '\\':
-				escChrFlg=true
-				if lastRune !=0 {
-					builder.WriteRune(lastRune)
-					lastRune=0
-				}
-			case r>='0' && r<='9':
-				var repNum = int (r-'0');
-				if lastRune == 0 {
-					return "", ErrInvalidString
-				}
-				if repNum > 0 {
-					builder.WriteString(strings.Repeat(string(lastRune),repNum))
-				} 
-				lastRune=0
-			default:
-				if lastRune !=0 {
-					builder.WriteRune(lastRune)
-				}
-				lastRune=r
+		case escChrFlg:
+			escChrFlg = false
+			lastRune = r
+		case r == '\\':
+			escChrFlg = true
+			if lastRune != 0 {
+				builder.WriteRune(lastRune)
+				lastRune = 0
+			}
+		case r >= '0' && r <= '9':
+			repNum := int(r - '0')
+			if lastRune == 0 {
+				return "", ErrInvalidString
+			}
+			if repNum > 0 {
+				builder.WriteString(strings.Repeat(string(lastRune), repNum))
+			}
+			lastRune = 0
+		default:
+			if lastRune != 0 {
+				builder.WriteRune(lastRune)
+			}
+			lastRune = r
 		}
 	}
 
-	if lastRune !=0 {
+	if lastRune != 0 {
 		builder.WriteRune(lastRune)
 	}
-
-
 
 	return builder.String(), nil
 }

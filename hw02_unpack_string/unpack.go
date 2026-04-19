@@ -14,7 +14,7 @@ func Unpack(message string) (string, error) {
 	escChrFlg := false
 	var lastRune rune
 
-	for i:=0; i<len(message); {
+	for i := 0; i < len(message); {
 		r, sz := utf8.DecodeRuneInString(message[i:])
 		i += sz
 

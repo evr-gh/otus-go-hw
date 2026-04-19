@@ -2,20 +2,17 @@ package hw02unpackstring
 
 import (
 	"errors"
-
 	"strings"
-
 	"unicode/utf8"
 )
 
 var ErrInvalidString = errors.New("invalid string")
 
 func Unpack(message string) (string, error) {
-
 	var builder strings.Builder
 	builder.Grow(len(message))
 	escChrFlg := false
-	var lastRune rune = 0
+	var lastRune rune
 
 	for i:=0; i<len(message); {
 		r, sz := utf8.DecodeRuneInString(message[i:])
@@ -32,7 +29,7 @@ func Unpack(message string) (string, error) {
 					lastRune=0
 				}
 			case r>='0' && r<='9':
-				var repNum int = int (r-'0');
+				var repNum = int (r-'0');
 				if lastRune == 0 {
 					return "", ErrInvalidString
 				}

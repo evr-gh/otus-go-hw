@@ -302,7 +302,6 @@ func TestTop10(t *testing.T) {
 				"не",        // 4
 			}
 			require.Equal(t, expected, Top10(text))
-
 		} else {
 			expected := []string{
 				"он",        // 8
@@ -334,7 +333,6 @@ func TestTop10(t *testing.T) {
 				"во",  // 3
 			}
 			require.Equal(t, expected2, Top10(text2))
-			
 		}
 	})
 	t.Run("positive test 3", func(t *testing.T) {
@@ -352,8 +350,6 @@ func TestTop10(t *testing.T) {
 				"светить", // 4
 			}
 			require.Equal(t, expected3, Top10(text3))
-		} else {
-			
 		}
 	})
 }

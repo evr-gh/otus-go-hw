@@ -64,7 +64,5 @@ func (lc *lruCache) Clear() {
 	lc.mu.Lock()
 	defer lc.mu.Unlock()
 	lc.queue.Clear()
-	for k := range lc.items {
-		delete(lc.items, k)
-	}
+	clear(lc.items)
 }

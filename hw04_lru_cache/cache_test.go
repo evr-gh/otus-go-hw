@@ -47,6 +47,16 @@ func TestCache(t *testing.T) {
 		val, ok = c.Get("ccc")
 		require.False(t, ok)
 		require.Nil(t, val)
+
+		c.Clear()
+
+		val, ok = c.Get("aaa")
+		require.False(t, ok)
+		require.Nil(t, val)
+
+		val, ok = c.Get("bbb")
+		require.False(t, ok)
+		require.Nil(t, val)
 	})
 
 	t.Run("simple purge logic", func(t *testing.T) {
@@ -189,6 +199,9 @@ func TestCacheMultithreading(t *testing.T) {
 		go func() {
 			defer wg.Done()
 			for i := range 1_000_000 {
+				if (i % 20) == 0 {
+					c.Clear()
+				}
 				c.Set(Key(strconv.Itoa(i)), i)
 			}
 		}()
@@ -236,6 +249,14 @@ func TestCacheMultithreading(t *testing.T) {
 			val, ok := c.Get(Key(strconv.Itoa(i)))
 			require.Equal(t, i, val)
 			require.True(t, ok)
+		}
+
+		c.Clear()
+
+		for i := range 10 {
+			val, ok := c.Get(Key(strconv.Itoa(i)))
+			require.Nil(t, val)
+			require.False(t, ok)
 		}
 	})
 }

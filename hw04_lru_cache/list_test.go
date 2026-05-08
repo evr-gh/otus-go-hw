@@ -52,7 +52,7 @@ func TestList(t *testing.T) {
 }
 
 func TestAddList(t *testing.T) {
-	t.Run("additional", func(t *testing.T) {
+	t.Run("additional 1", func(t *testing.T) {
 		l := NewList()
 
 		l.PushFront(1) // [1]
@@ -102,7 +102,7 @@ func TestAddList(t *testing.T) {
 		require.Equal(t, []int{5, 5, 6, 4, 3, 2, 2, 3, 4, 6}, elems)
 	})
 
-	t.Run("additional", func(t *testing.T) {
+	t.Run("additional 2", func(t *testing.T) {
 		l := NewList()
 
 		l.PushFront("dog") // [("dog"]

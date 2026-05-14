@@ -51,9 +51,11 @@ func Run(tasks []Task, n, m int) error {
 				return nil
 			}
 			if startedTasksCount < tasksCount {
+				i := startedTasksCount
 				startedTasksCount++
+
 				go func() {
-					chIn <- tasks[startedTasksCount-1]()
+					chIn <- tasks[i]()
 				}()
 			}
 		}

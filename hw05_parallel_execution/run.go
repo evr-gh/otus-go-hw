@@ -2,9 +2,12 @@ package hw05parallelexecution
 
 import (
 	"errors"
+	"sync"
 )
 
 var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
+
+var ErrProcExeWithErrors = errors.New("procs execution with errors")
 
 var ErrNoExeThreadsAreGiven = errors.New("no exe threads are given")
 
@@ -19,6 +22,8 @@ func Run(tasks []Task, n, m int) error {
 		return ErrNoExeThreadsAreGiven
 	}
 
+	wg := sync.WaitGroup{}
+
 	resChan := make(chan error)
 	var chIn chan<- error
 	var chOut <-chan error
@@ -32,9 +37,9 @@ func Run(tasks []Task, n, m int) error {
 
 	for i := 0; (i < n) && (i < tasksCount); i++ {
 		startedTasksCount++
-		go func() {
+		wg.Go(func() {
 			chIn <- tasks[i]()
-		}()
+		})
 	}
 
 	for err := range chOut {
@@ -42,24 +47,31 @@ func Run(tasks []Task, n, m int) error {
 		if err != nil {
 			errTasksCount++
 		}
-		if errTasksCount >= m {
+		if (m >= 0) && (errTasksCount >= m) {
 			if startedTasksCount == finishedTasksCount {
+				wg.Wait()
 				return ErrErrorsLimitExceeded
 			}
 		} else {
-			if (startedTasksCount == finishedTasksCount) && (finishedTasksCount == tasksCount) {
+			switch {
+			case (startedTasksCount == tasksCount) && (finishedTasksCount == tasksCount):
+				wg.Wait()
+				if errTasksCount > 0 {
+					return ErrProcExeWithErrors
+				}
 				return nil
-			}
-			if startedTasksCount < tasksCount {
+			case startedTasksCount < tasksCount:
 				i := startedTasksCount
 				startedTasksCount++
 
-				go func() {
+				wg.Go(func() {
 					chIn <- tasks[i]()
-				}()
+				})
 			}
 		}
 	}
+
+	wg.Wait()
 
 	if (startedTasksCount == finishedTasksCount) && (finishedTasksCount == tasksCount) {
 		return nil

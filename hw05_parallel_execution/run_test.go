@@ -70,6 +70,33 @@ func TestRun(t *testing.T) {
 	})
 }
 
+func tc0(t *testing.T) {
+	tasksCount := int32(50)
+	tasks := make([]Task, 0, tasksCount)
+
+	var m sync.Map
+
+	var runTasksCount int32
+
+	for i := int32(0); i < tasksCount; i++ {
+		err := fmt.Errorf("error from task %d", i)
+		taskSleep := time.Millisecond * time.Duration(rand.Intn(100)+1)
+		tasks = append(tasks, func() error {
+			require.Eventually(t, func() bool { return true }, taskSleep*10, taskSleep)
+			atomic.AddInt32(&runTasksCount, 1)
+			m.Store(i, err)
+			return err
+		})
+	}
+
+	workersCount := 0
+	maxErrorsCount := 23
+	err := Run(tasks, workersCount, maxErrorsCount)
+
+	require.Truef(t, errors.Is(err, ErrNoExeThreadsAreGiven), "actual err - %v", err)
+	require.LessOrEqual(t, runTasksCount, int32(workersCount+maxErrorsCount), "extra tasks were started")
+}
+
 func tc1(t *testing.T) {
 	tasksCount := int32(50)
 	tasks := make([]Task, 0, tasksCount)
@@ -272,6 +299,8 @@ func tc5(t *testing.T) {
 
 func TestMoreRun(t *testing.T) {
 	defer goleak.VerifyNone(t)
+
+	t.Run("no exe threads are given", tc0)
 
 	t.Run("if were errors in first M tasks, than finished not more N+M tasks", tc1)
 

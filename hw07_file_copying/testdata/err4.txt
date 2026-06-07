@@ -1,0 +1,1 @@
+Fail to copy /dev/urandom to out.txt: unsupported file

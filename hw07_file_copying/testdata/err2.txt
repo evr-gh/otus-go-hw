@@ -1,0 +1,1 @@
+Fail to copy testdata/no_exist_input.txt to out.txt: open testdata/no_exist_input.txt: no such file or directory

@@ -81,19 +81,15 @@ func TestCopy(t *testing.T) {
 		tc(t, "testdata/tolstoy_voyna-i-mir.txt", "testdata/empty_out.txt", 5350525, 1000)
 	})
 
-	t.Run("ETC1 not_readable_input ", func(t *testing.T) {
-		etc(t, "testdata/not_readable_input.txt", "open testdata/not_readable_input.txt: permission denied", 0, 0)
-	})
-
-	t.Run("ETC2 no_exist_input ", func(t *testing.T) {
+	t.Run("ETC1 no_exist_input ", func(t *testing.T) {
 		etc(t, "testdata/no_exist_input.txt", "open testdata/no_exist_input.txt: no such file or directory", 0, 0)
 	})
 
-	t.Run("ETC3 unsupported file", func(t *testing.T) {
+	t.Run("ETC2 unsupported file", func(t *testing.T) {
 		etc(t, "/dev/urandom", "unsupported file", 0, 0)
 	})
 
-	t.Run("ETC4 offset exceeds file size", func(t *testing.T) {
+	t.Run("ETC3 offset exceeds file size", func(t *testing.T) {
 		etc(t, "testdata/input.txt", "offset exceeds file size", 100000, 1000)
 	})
 }

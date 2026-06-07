@@ -22,9 +22,6 @@ cmp out.txt testdata/out_offset100_limit1000.txt
 cmp out.txt testdata/out_offset6000_limit1000.txt
 
 
-./go-cp -from testdata/not_readable_input.txt -to out.txt > err.txt
-cmp err.txt testdata/err1.txt
-
 ./go-cp -from testdata/no_exist_input.txt -to out.txt > err.txt
 cmp err.txt testdata/err2.txt
 

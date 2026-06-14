@@ -1,0 +1,1 @@
+Fail to copy testdata/input.txt to /inv/dir/out.txt: open /inv/dir/out.txt: no such file or directory

@@ -1,0 +1,1 @@
+Fail to copy testdata/not_readable_input.txt to out.txt: open testdata/not_readable_input.txt: permission denied

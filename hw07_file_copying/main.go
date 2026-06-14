@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 )
 
 var (
@@ -18,5 +19,25 @@ func init() {
 
 func main() {
 	flag.Parse()
-	// Place your code here.
+	paramIsOK := false
+	switch {
+	case from == "":
+		fmt.Println("from file isn't set")
+		fallthrough
+	case to == "":
+		fmt.Println("out file isn't set")
+	case from == to:
+		fmt.Println("from file and out file are the same")
+	default:
+		paramIsOK = true
+	}
+
+	if !paramIsOK {
+		return
+	}
+
+	err := Copy(from, to, offset, limit)
+	if err != nil {
+		fmt.Printf("Fail to copy %s to %s: %s\n", from, to, err)
+	}
 }

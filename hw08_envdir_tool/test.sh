@@ -44,8 +44,8 @@ expected='Error executing command: invalid env variable name (ENV=PARAM)
 
 
 echo "-- ADDITIONAL TEST 3 ----------------------------------------------------------------------------------"
-result=$(./go-envdir "$(pwd)/testdata/no_exist" "/bin/bash" "$(pwd)/testdata/echo.sh" arg1=1 arg2=2; echo $?)
-expected='Error executing command: open /workspace/rev/otus/otus-go-hw08/hw08_envdir_tool/testdata/no_exist: no such file or directory
+result=$(./go-envdir "/no_exist" "/bin/bash" "$(pwd)/testdata/echo.sh" arg1=1 arg2=2; echo $?)
+expected='Error executing command: open /no_exist: no such file or directory
 255'
 
 [ "${result}" = "${expected}" ] || (echo -e "invalid output: ${result}" && exit 1)

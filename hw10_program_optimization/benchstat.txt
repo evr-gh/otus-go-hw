@@ -1,0 +1,21 @@
+goos: linux
+goarch: amd64
+pkg: github.com/evr-gh/otus-go-hw/hw10_program_optimization
+cpu: AMD Ryzen AI 9 HX 370 w/ Radeon 890M           
+                       │   /tmp/old10    │              /tmp/new10              │
+                       │     sec/op      │    sec/op     vs base                │
+GetDomainStat-12          4194.43µ ± 35%   11.18µ ± 69%  -99.73% (p=0.000 n=10)
+GetDomainStatSimple-12   3208.899µ ± 26%   8.896µ ±  8%  -99.72% (p=0.000 n=10)
+geomean                     3.669m         9.975µ        -99.73%
+
+                       │   /tmp/old10    │              /tmp/new10              │
+                       │      B/op       │     B/op      vs base                │
+GetDomainStat-12         21341.11Ki ± 1%   57.63Ki ± 0%  -99.73% (p=0.000 n=10)
+GetDomainStatSimple-12   20610.96Ki ± 0%   57.39Ki ± 0%  -99.72% (p=0.000 n=10)
+geomean                     20.48Mi        57.51Ki       -99.73%
+
+                       │   /tmp/old10   │             /tmp/new10              │
+                       │   allocs/op    │  allocs/op   vs base                │
+GetDomainStat-12          9845.50 ± 31%   13.00 ± 31%  -99.87% (p=0.000 n=10)
+GetDomainStatSimple-12   3711.000 ± 24%   8.000 ±  0%  -99.78% (p=0.000 n=10)
+geomean                    6.045k         10.20        -99.83%

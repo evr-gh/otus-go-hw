@@ -29,21 +29,15 @@ type Client struct {
 	In         io.ReadCloser
 	Out        io.Writer
 	Connection net.Conn
-	Cntx       context.Context
-	Cancel     context.CancelFunc
 }
 
 func NewTelnetClient(address string, timeout time.Duration, in io.ReadCloser, out io.Writer) TelnetClient {
-	cntx, cancel := context.WithCancel(context.Background())
-
 	return &Client{
 		Address:    address,
 		Timeout:    timeout,
 		In:         in,
 		Out:        out,
 		Connection: nil,
-		Cntx:       cntx,
-		Cancel:     cancel,
 	}
 }
 
@@ -70,7 +64,6 @@ func (c *Client) Close() error {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Ошибка при закрытии входного потока: %v\n", err)
 		}
-		c.Cancel()
 	}()
 
 	if c.Connection == nil {
@@ -96,6 +89,9 @@ func (c *Client) Send() error {
 		return err
 	}
 
+	cntx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	inChan := make(chan string)
 	go func() {
 		defer close(inChan)
@@ -111,7 +107,7 @@ func (c *Client) Send() error {
 OUTER:
 	for {
 		select {
-		case <-c.Cntx.Done():
+		case <-cntx.Done():
 			break OUTER
 		case str, ok := <-inChan:
 			if !ok {
@@ -134,11 +130,14 @@ func (c *Client) Receive() error {
 		return err
 	}
 
+	cntx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	scanner := bufio.NewScanner(c.Connection)
 OUTER:
 	for {
 		select {
-		case <-c.Cntx.Done():
+		case <-cntx.Done():
 			break OUTER
 		default:
 			if !scanner.Scan() {

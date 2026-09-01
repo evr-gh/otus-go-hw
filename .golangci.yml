@@ -57,6 +57,17 @@ linters:
             - golang.org/x/
             - github.com/stretchr/testify
             - github.com/cheggaaa/pb/v3
+            - github.com/spf13/pflag
+            - github.com/spf13/viper
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/config
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/memory
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/sql
         Test:
           files:
             - $test
@@ -65,6 +76,17 @@ linters:
             - golang.org/x/
             - github.com/stretchr/testify
             - go.uber.org/goleak
+            - github.com/spf13/pflag
+            - github.com/spf13/viper
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/config
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/memory
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/sql
     funlen:
       lines: 150
       statements: 80

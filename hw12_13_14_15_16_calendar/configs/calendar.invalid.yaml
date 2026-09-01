@@ -1,0 +1,15 @@
+http: 
+  host: 0.0.0.0
+  port: "invalid value"
+  readtimeout: "5s"
+  readheadertimeout: "6s"
+  writetimeout: "7s"
+  maxheaderbytes: 65000
+rpc: 
+  host: 0.0.0.0
+  port: 5000
+storage:
+  type: pgsqldtb
+  dsn: "user=user password=userpasswd host=db_host database=clendar search_path=calendar sslmode=disable port=5432"
+logger:
+  level: INFO

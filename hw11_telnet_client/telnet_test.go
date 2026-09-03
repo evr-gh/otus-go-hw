@@ -5,7 +5,10 @@ import (
 	"context"
 	"io"
 	"net"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"testing"
 	"time"
 
@@ -28,18 +31,21 @@ func TestTelnetClient(t *testing.T) {
 			in := &bytes.Buffer{}
 			out := &bytes.Buffer{}
 
+			ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+			defer stop()
+
 			timeout, err := time.ParseDuration("10s")
 			require.NoError(t, err)
 
 			client := NewTelnetClient(l.Addr().String(), timeout, io.NopCloser(in), out)
-			require.NoError(t, client.Connect())
+			require.NoError(t, client.Connect(ctx))
 			defer func() { require.NoError(t, client.Close()) }()
 
 			in.WriteString("hello\n")
-			err = client.Send()
+			err = client.Send(ctx)
 			require.NoError(t, err)
 
-			err = client.Receive()
+			err = client.Receive(ctx)
 			require.NoError(t, err)
 			require.Equal(t, "world\n", out.String())
 		}()
@@ -82,18 +88,21 @@ func TestAdd1TelnetClient(t *testing.T) {
 			in := &bytes.Buffer{}
 			out := &bytes.Buffer{}
 
+			ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+			defer stop()
+
 			timeout, err := time.ParseDuration("10s")
 			require.NoError(t, err)
 
 			client := NewTelnetClient(l.Addr().String(), timeout, io.NopCloser(in), out)
-			require.NoError(t, client.Connect())
+			require.NoError(t, client.Connect(ctx))
 			defer func() { require.NoError(t, client.Close()) }()
 
 			in.WriteString("hello\n")
-			err = client.Send()
+			err = client.Send(ctx)
 			require.NoError(t, err)
 
-			err = client.Receive()
+			err = client.Receive(ctx)
 			require.NoError(t, err)
 			require.Equal(t, "", out.String())
 		}()
@@ -116,11 +125,14 @@ func TestAdd2TelnetClient(t *testing.T) {
 		in := &bytes.Buffer{}
 		out := &bytes.Buffer{}
 
+		ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+		defer stop()
+
 		timeout, err := time.ParseDuration("1s")
 		require.NoError(t, err)
 
 		client := NewTelnetClient("127.0.0.1:1234", timeout, io.NopCloser(in), out)
-		err = client.Connect()
+		err = client.Connect(ctx)
 		require.Error(t, err)
 		require.Equal(t, err.Error(), "dial tcp 127.0.0.1:1234: connect: connection refused")
 

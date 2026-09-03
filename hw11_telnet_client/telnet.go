@@ -17,10 +17,10 @@ var (
 )
 
 type TelnetClient interface {
-	Connect() error
+	Connect(ctx context.Context) error
 	io.Closer
-	Send() error
-	Receive() error
+	Send(ctx context.Context) error
+	Receive(ctx context.Context) error
 }
 
 type Client struct {
@@ -41,9 +41,9 @@ func NewTelnetClient(address string, timeout time.Duration, in io.ReadCloser, ou
 	}
 }
 
-func (c *Client) Connect() error {
+func (c *Client) Connect(ctx context.Context) error {
 	var dialer net.Dialer
-	cntx := context.Background()
+	cntx := ctx
 	var cancel context.CancelFunc
 	if c.Timeout > 0 {
 		cntx, cancel = context.WithTimeout(cntx, c.Timeout)
@@ -82,15 +82,12 @@ func (c *Client) Close() error {
 	return nil
 }
 
-func (c *Client) Send() error {
+func (c *Client) Send(ctx context.Context) error {
 	if c.Connection == nil {
 		err := ErrSendNoConnection
 		fmt.Fprintf(os.Stderr, "Oшибка передачи данных: %v\n", err)
 		return err
 	}
-
-	cntx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	inChan := make(chan string)
 	go func() {
@@ -104,14 +101,14 @@ func (c *Client) Send() error {
 			fmt.Fprintf(os.Stderr, "Ошибка при получении данных: %v\n", scanner.Err())
 		}
 	}()
-OUTER:
+
 	for {
 		select {
-		case <-cntx.Done():
-			break OUTER
+		case <-ctx.Done():
+			return nil
 		case str, ok := <-inChan:
 			if !ok {
-				break OUTER
+				return nil
 			}
 			if _, err := fmt.Fprintf(c.Connection, "%s\n", str); err != nil {
 				fmt.Fprintf(os.Stderr, "Oшибка передачи данных: %v\n", err)
@@ -119,34 +116,31 @@ OUTER:
 			}
 		}
 	}
-
-	return nil
 }
 
-func (c *Client) Receive() error {
+func (c *Client) Receive(ctx context.Context) error {
 	if c.Connection == nil {
 		err := ErrReceiveNoConnection
 		fmt.Fprintf(os.Stderr, "Oшибка приема данных: %v\n", err)
 		return err
 	}
 
-	cntx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	scanner := bufio.NewScanner(c.Connection)
-OUTER:
+
 	for {
 		select {
-		case <-cntx.Done():
-			break OUTER
+		case <-ctx.Done():
+			return nil
 		default:
 			if !scanner.Scan() {
-				break OUTER
+				err := scanner.Err()
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Oшибка приема данных: %v\n", err)
+				}
+				return err
 			}
 			text := scanner.Text()
 			fmt.Fprintf(c.Out, "%s\n", text)
 		}
 	}
-
-	return nil
 }

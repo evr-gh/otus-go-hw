@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -52,10 +55,13 @@ func main() {
 
 	client := NewTelnetClient(args[0]+":"+strconv.Itoa(port), timeout, os.Stdin, os.Stdout)
 
-	err = client.Connect()
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+	defer stop()
+
+	err = client.Connect(ctx)
 	if err != nil {
 		client.Close()
-		os.Exit(1)
+		return
 	}
 
 	defer client.Close()
@@ -64,10 +70,16 @@ func main() {
 	wg.Add(2)
 
 	wg.Go(func() {
-		client.Receive()
+		err := client.Receive(ctx)
+		if err != nil {
+			stop()
+		}
 	})
 	wg.Go(func() {
-		client.Send()
+		err := client.Send(ctx)
+		if err != nil {
+			stop()
+		}
 	})
 
 	wg.Wait()

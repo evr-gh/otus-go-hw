@@ -42,9 +42,8 @@ func main() {
 
 	server := internalhttp.NewServer(logg, calendar)
 
-	ctx, cancel := signal.NotifyContext(context.Background(),
-		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
-	defer cancel()
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+	defer stop()
 
 	go func() {
 		<-ctx.Done()
@@ -61,7 +60,7 @@ func main() {
 
 	if err := server.Start(ctx); err != nil {
 		logg.Error("failed to start http server: %v", err.Error())
-		cancel()
+		stop()
 		os.Exit(1) //nolint:gocritic
 	}
 }

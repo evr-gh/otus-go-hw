@@ -21,7 +21,7 @@ func (a *App) CreateEvent(ctx context.Context, event *data.Event) (*data.Event, 
 	if err != nil {
 		return nil, err
 	}
-	defer a.storage.Close(ctx)
+	defer a.storage.Close()
 	// TODO: in args `ctx context.Context`
 	return a.storage.CreateEvent(ctx, event)
 }
@@ -31,7 +31,7 @@ func (a *App) ReadEvent(ctx context.Context, id int) (*data.Event, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer a.storage.Close(ctx)
+	defer a.storage.Close()
 	return a.storage.ReadEvent(ctx, id)
 }
 
@@ -40,7 +40,7 @@ func (a *App) UpdateEvent(ctx context.Context, e *data.Event) (*data.Event, erro
 	if err != nil {
 		return nil, err
 	}
-	defer a.storage.Close(ctx)
+	defer a.storage.Close()
 	return a.storage.UpdateEvent(ctx, e)
 }
 
@@ -49,7 +49,7 @@ func (a *App) DeleteEvent(ctx context.Context, e *data.Event) (*data.Event, erro
 	if err != nil {
 		return nil, err
 	}
-	defer a.storage.Close(ctx)
+	defer a.storage.Close()
 	return a.storage.DeleteEvent(ctx, e)
 }
 
@@ -58,7 +58,7 @@ func (a *App) ListEvents(ctx context.Context) ([]data.Event, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer a.storage.Close(ctx)
+	defer a.storage.Close()
 	return a.storage.ListEvents(ctx)
 }
 
@@ -67,6 +67,6 @@ func (a *App) ListNotSheduledEvents(ctx context.Context) ([]data.Event, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer a.storage.Close(ctx)
+	defer a.storage.Close()
 	return a.storage.ListNotSheduledEvents(ctx)
 }

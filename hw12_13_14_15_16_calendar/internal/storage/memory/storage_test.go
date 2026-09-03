@@ -33,6 +33,7 @@ var event3 = data.Event{
 	Owner:       "tester2",
 }
 
+//nolint:funlen
 func TestStorage(t *testing.T) {
 	cntx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -42,11 +43,9 @@ func TestStorage(t *testing.T) {
 	require.NoError(t, err)
 
 	defer func() {
-		err := storage.Close(cntx)
+		err := storage.Close()
 		require.NoError(t, err)
 	}()
-
-	// CREATE
 
 	d1, err := time.ParseDuration("5m7s")
 	require.NoError(t, err)
@@ -72,17 +71,25 @@ func TestStorage(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 2, secondEvent.ID)
 
-	// DELETE
+	nilEvent, err := storage.CreateEvent(cntx, nil)
+	require.Error(t, err)
+	require.Equal(t, "не создано событие: не передана информация по событию", err.Error())
+	require.Nil(t, nilEvent)
+
 	dEvent2, err := storage.DeleteEvent(cntx, secondEvent)
 	require.NoError(t, err)
 	require.Equal(t, secondEvent, dEvent2)
 
+	secondEvent.ID = 2
 	dEvent3, err := storage.DeleteEvent(cntx, secondEvent)
-	require.Error(t, err)
-	require.Equal(t, "не удалено событие с ID=2: нет в БД", err.Error())
+	require.NoError(t, err)
 	require.Equal(t, secondEvent, dEvent3)
 
-	// CREATE
+	nilEvent, err = storage.DeleteEvent(cntx, nil)
+	require.Error(t, err)
+	require.Equal(t, "не удалено событие: не передана информация по событию", err.Error())
+	require.Nil(t, nilEvent)
+
 	d3, err := time.ParseDuration("1m")
 	require.NoError(t, err)
 	event3.Duration = d3
@@ -95,7 +102,6 @@ func TestStorage(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 3, thirdEvent.ID)
 
-	// UPDATE
 	description := "Обновленное описание третьего события"
 	thirdEvent.Description = description
 	thirdEvent.Sheduled = true
@@ -109,7 +115,11 @@ func TestStorage(t *testing.T) {
 	require.Equal(t, "не обновлено событие с ID=2: нет в БД", err.Error())
 	require.Equal(t, secondEvent, uEvent2)
 
-	// READ (all)
+	nilEvent, err = storage.UpdateEvent(cntx, nil)
+	require.Error(t, err)
+	require.Equal(t, "не обновлено событие: не передана информация по событию", err.Error())
+	require.Nil(t, nilEvent)
+
 	events, err := storage.ListEvents(cntx)
 	require.NoError(t, err)
 
@@ -130,7 +140,6 @@ func TestStorage(t *testing.T) {
 
 	require.Equal(t, []data.Event{*firstEvent, *thirdEvent}, tevents)
 
-	// READ
 	rEvent, err := storage.ReadEvent(cntx, 3)
 	require.NoError(t, err)
 	require.Equal(t, thirdEvent, rEvent)
@@ -140,7 +149,6 @@ func TestStorage(t *testing.T) {
 	require.Equal(t, "не получено событие с ID=4: нет в БД", err.Error())
 	require.Nil(t, rEvent)
 
-	// READ
 	nsEvents, err := storage.ListNotSheduledEvents(cntx)
 	require.NoError(t, err)
 

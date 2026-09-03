@@ -8,19 +8,14 @@ import (
 
 var (
 	GoMemoryStorage = "memory"
-	PostgresStorage = "sql"
+	PostgresStorage = "postgres"
 )
 
-func New(storageType string, a ...any) interfaces.Storage {
+func New(storageType string, dsn string) interfaces.Storage {
 	switch storageType {
 	case GoMemoryStorage:
 		return memorystorage.New()
-	case PostgresStorage:
-		if len(a) > 0 {
-			return sqlstorage.New(a[0].(string))
-		}
-		return sqlstorage.New("")
 	default:
-		return memorystorage.New()
+		return sqlstorage.New(storageType, dsn)
 	}
 }

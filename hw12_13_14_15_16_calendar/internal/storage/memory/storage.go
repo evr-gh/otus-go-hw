@@ -21,15 +21,18 @@ func New() *Storage {
 	return &Storage{make(inMemoryDatabase), sync.RWMutex{}, 0}
 }
 
-func (s *Storage) Connect(ctx context.Context) error {
+func (s *Storage) Connect(_ context.Context) error {
 	return nil
 }
 
-func (s *Storage) Close(ctx context.Context) error {
+func (s *Storage) Close() error {
 	return nil
 }
 
-func (s *Storage) CreateEvent(ctx context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) CreateEvent(_ context.Context, event *data.Event) (*data.Event, error) {
+	if event == nil {
+		return event, fmt.Errorf("не создано событие: %w", interfaces.ErrNoEvent)
+	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.counter++
@@ -39,7 +42,7 @@ func (s *Storage) CreateEvent(ctx context.Context, event *data.Event) (*data.Eve
 	return event, nil
 }
 
-func (s *Storage) ReadEvent(ctx context.Context, eventID int) (*data.Event, error) {
+func (s *Storage) ReadEvent(_ context.Context, eventID int) (*data.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	event, exists := s.data[eventID]
@@ -49,7 +52,10 @@ func (s *Storage) ReadEvent(ctx context.Context, eventID int) (*data.Event, erro
 	return nil, fmt.Errorf("не получено событие с ID=%v: %w", eventID, interfaces.ErrNoData)
 }
 
-func (s *Storage) UpdateEvent(ctx context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) UpdateEvent(_ context.Context, event *data.Event) (*data.Event, error) {
+	if event == nil {
+		return event, fmt.Errorf("не обновлено событие: %w", interfaces.ErrNoEvent)
+	}
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	_, exists := s.data[event.ID]
@@ -60,34 +66,48 @@ func (s *Storage) UpdateEvent(ctx context.Context, event *data.Event) (*data.Eve
 	return event, fmt.Errorf("не обновлено событие с ID=%v: %w", event.ID, interfaces.ErrNoData)
 }
 
-func (s *Storage) DeleteEvent(ctx context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) DeleteEvent(_ context.Context, event *data.Event) (*data.Event, error) {
+	if event == nil {
+		return event, fmt.Errorf("не удалено событие: %w", interfaces.ErrNoEvent)
+	}
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	_, exists := s.data[event.ID]
 	if exists {
 		delete(s.data, event.ID)
+		event.ID = 0
 		return event, nil
 	}
-	return event, fmt.Errorf("не удалено событие с ID=%v: %w", event.ID, interfaces.ErrNoData)
+	return event, nil
 }
 
-func (s *Storage) ListEvents(ctx context.Context) ([]data.Event, error) {
+func (s *Storage) ListEvents(cntx context.Context) ([]data.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	events := make([]data.Event, 0, len(s.data))
 	for _, event := range s.data {
-		events = append(events, *event)
+		select {
+		case <-cntx.Done():
+			return events, fmt.Errorf("список событий не получен: %w", interfaces.ErrOpInterrupt)
+		default:
+			events = append(events, *event)
+		}
 	}
 	return events, nil
 }
 
-func (s *Storage) ListNotSheduledEvents(ctx context.Context) ([]data.Event, error) {
+func (s *Storage) ListNotSheduledEvents(cntx context.Context) ([]data.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	events := make([]data.Event, 0, len(s.data)/4)
 	for _, event := range s.data {
-		if !event.Sheduled {
-			events = append(events, *event)
+		select {
+		case <-cntx.Done():
+			return events, fmt.Errorf("список незапланированных событий не получен: %w", interfaces.ErrOpInterrupt)
+		default:
+			if !event.Sheduled {
+				events = append(events, *event)
+			}
 		}
 	}
 	return events, nil

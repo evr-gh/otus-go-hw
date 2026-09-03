@@ -3,12 +3,18 @@ module github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar
 go 1.25.0
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
+	github.com/go-sql-driver/mysql v1.8.1
+	github.com/jmoiron/sqlx v1.4.0
+	github.com/lib/pq v1.12.3
+	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/spf13/pflag v1.0.10
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect

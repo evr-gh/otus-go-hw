@@ -59,6 +59,9 @@ linters:
             - github.com/cheggaaa/pb/v3
             - github.com/spf13/pflag
             - github.com/spf13/viper
+            - github.com/jmoiron/sqlx
+            - github.com/mattn/go-sqlite3
+            - github.com/DATA-DOG/go-sqlmock
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/config
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data
@@ -78,6 +81,9 @@ linters:
             - go.uber.org/goleak
             - github.com/spf13/pflag
             - github.com/spf13/viper
+            - github.com/jmoiron/sqlx
+            - github.com/mattn/go-sqlite3
+            - github.com/DATA-DOG/go-sqlmock
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/config
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data

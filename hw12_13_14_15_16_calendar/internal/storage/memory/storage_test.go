@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
-	data "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
+	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
 	"github.com/stretchr/testify/require"
 )
 
-var event1 = data.Event{
+var event1 = models.Event{
 	ID:          0,
 	Title:       "Title1",
 	Time:        time.Now(),
@@ -17,7 +17,7 @@ var event1 = data.Event{
 	Owner:       "tester",
 }
 
-var event2 = data.Event{
+var event2 = models.Event{
 	ID:          0,
 	Title:       "Title2",
 	Time:        time.Now(),
@@ -25,7 +25,7 @@ var event2 = data.Event{
 	Owner:       "tester",
 }
 
-var event3 = data.Event{
+var event3 = models.Event{
 	ID:          0,
 	Title:       "Title3",
 	Time:        time.Now(),
@@ -125,7 +125,7 @@ func TestStorage(t *testing.T) {
 
 	require.Equal(t, 2, len(events))
 
-	tevents := make([]data.Event, 0, 2)
+	tevents := make([]models.Event, 0, 2)
 
 	for _, e := range events {
 		if e.ID == 1 {
@@ -138,7 +138,7 @@ func TestStorage(t *testing.T) {
 		}
 	}
 
-	require.Equal(t, []data.Event{*firstEvent, *thirdEvent}, tevents)
+	require.Equal(t, []models.Event{*firstEvent, *thirdEvent}, tevents)
 
 	rEvent, err := storage.ReadEvent(cntx, 3)
 	require.NoError(t, err)
@@ -153,5 +153,5 @@ func TestStorage(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, 1, len(nsEvents))
-	require.Equal(t, []data.Event{*firstEvent}, nsEvents)
+	require.Equal(t, []models.Event{*firstEvent}, nsEvents)
 }

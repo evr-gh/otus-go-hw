@@ -6,16 +6,19 @@ import (
 	"errors"
 	"fmt"
 
-	data "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
+	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
 	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
+	// mysql driver.
 	_ "github.com/go-sql-driver/mysql"
+	// Postgersql driver.
+	_ "github.com/jackc/pgx/v5"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	// sqlite driver.
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type Storage struct {
-	SqlDbType string
+	SQLDbType string
 	DSN       string
 	db        *sqlx.DB
 }
@@ -25,7 +28,7 @@ func New(sqlDbType string, dsn string) *Storage {
 }
 
 func (s *Storage) Connect(cntx context.Context) error {
-	db, err := sqlx.ConnectContext(cntx, s.SqlDbType, s.DSN)
+	db, err := sqlx.ConnectContext(cntx, s.SQLDbType, s.DSN)
 	if err != nil {
 		return fmt.Errorf("не удалось подключиться к БД: %w", err)
 	}
@@ -44,7 +47,7 @@ func (s *Storage) Close() error {
 	return nil
 }
 
-func (s *Storage) CreateEvent(ctx context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) CreateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
 	if event == nil {
 		return event, fmt.Errorf("не создано событие: %w", interfaces.ErrNoEvent)
 	}
@@ -60,8 +63,8 @@ func (s *Storage) CreateEvent(ctx context.Context, event *data.Event) (*data.Eve
 	return event, nil
 }
 
-func (s *Storage) ReadEvent(ctx context.Context, eventID int) (*data.Event, error) {
-	var e data.Event
+func (s *Storage) ReadEvent(ctx context.Context, eventID int) (*models.Event, error) {
+	var e models.Event
 	sqlStatement := `SELECT "id", "title", "description", "time", "duration", "owner", "notifyleadtime", "sheduled"
 	FROM events WHERE "id"=$1;`
 	err := s.db.QueryRowxContext(ctx, sqlStatement, eventID).Scan(&e.ID,
@@ -76,11 +79,11 @@ func (s *Storage) ReadEvent(ctx context.Context, eventID int) (*data.Event, erro
 	return &e, nil
 }
 
-func (s *Storage) UpdateEvent(ctx context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) UpdateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
 	if event == nil {
 		return event, fmt.Errorf("не обновлено событие: %w", interfaces.ErrNoEvent)
 	}
-	sqlStatement := ` UPDATE events SET "title"=$1, "description"=$2, "time"=$3, "duration"=$4, 
+	sqlStatement := `UPDATE events SET "title"=$1, "description"=$2, "time"=$3, "duration"=$4, 
 	"owner"=$5, "notifyleadtime"=$6, "sheduled"=$7 WHERE id=$8;`
 	res, err := s.db.ExecContext(ctx, sqlStatement, event.Title, event.Description,
 		event.Time, event.Duration, event.Owner, event.NotifyLeadTime, event.Sheduled,
@@ -97,7 +100,7 @@ func (s *Storage) UpdateEvent(ctx context.Context, event *data.Event) (*data.Eve
 	return event, nil
 }
 
-func (s *Storage) DeleteEvent(ctx context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) DeleteEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
 	if event == nil {
 		return event, fmt.Errorf("не удалено событие: %w", interfaces.ErrNoEvent)
 	}
@@ -114,9 +117,9 @@ func (s *Storage) DeleteEvent(ctx context.Context, event *data.Event) (*data.Eve
 	return event, nil
 }
 
-func (s *Storage) ListEvents(ctx context.Context) ([]data.Event, error) {
-	var e data.Event
-	var events []data.Event
+func (s *Storage) ListEvents(ctx context.Context) ([]models.Event, error) {
+	var e models.Event
+	var events []models.Event
 	sqlStatement := `SELECT "id", "title", "description", "startat", "durationseconds", "owner", 
 	"notifyearlyseconds", "sheduled" FROM events;`
 	rows, err := s.db.QueryContext(ctx, sqlStatement)
@@ -135,9 +138,9 @@ func (s *Storage) ListEvents(ctx context.Context) ([]data.Event, error) {
 	return events, nil
 }
 
-func (s *Storage) ListNotSheduledEvents(ctx context.Context) ([]data.Event, error) {
-	var e data.Event
-	var events []data.Event
+func (s *Storage) ListNotSheduledEvents(ctx context.Context) ([]models.Event, error) {
+	var e models.Event
+	var events []models.Event
 	sqlStatement := `SELECT "id", "title", "description", "startat", "durationseconds", "owner", 
 	"notifyearlyseconds", "sheduled" FROM events WHERE "sheduled" IS NOT TRUE;`
 	rows, err := s.db.QueryContext(ctx, sqlStatement)

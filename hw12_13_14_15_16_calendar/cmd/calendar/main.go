@@ -40,7 +40,14 @@ func main() {
 	storage := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
 	calendar := app.New(logg, storage)
 
-	server := internalhttp.NewServer(logg, calendar)
+	server := internalhttp.NewServer(calendar,
+		cmdConfig.HTTP.Host,
+		cmdConfig.HTTP.Port,
+		cmdConfig.HTTP.ReadTimeout,
+		cmdConfig.HTTP.ReadHeaderTimeout,
+		cmdConfig.HTTP.WriteTimeout,
+		cmdConfig.HTTP.MaxHeaderBytes,
+		logg)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
 	defer stop()

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"sync"
 
-	data "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
+	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
 	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 )
 
-type inMemoryDatabase map[int]*data.Event
+type inMemoryDatabase map[int]*models.Event
 
 type Storage struct {
 	data    inMemoryDatabase
@@ -29,7 +29,7 @@ func (s *Storage) Close() error {
 	return nil
 }
 
-func (s *Storage) CreateEvent(_ context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) CreateEvent(_ context.Context, event *models.Event) (*models.Event, error) {
 	if event == nil {
 		return event, fmt.Errorf("не создано событие: %w", interfaces.ErrNoEvent)
 	}
@@ -42,7 +42,7 @@ func (s *Storage) CreateEvent(_ context.Context, event *data.Event) (*data.Event
 	return event, nil
 }
 
-func (s *Storage) ReadEvent(_ context.Context, eventID int) (*data.Event, error) {
+func (s *Storage) ReadEvent(_ context.Context, eventID int) (*models.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	event, exists := s.data[eventID]
@@ -52,7 +52,7 @@ func (s *Storage) ReadEvent(_ context.Context, eventID int) (*data.Event, error)
 	return nil, fmt.Errorf("не получено событие с ID=%v: %w", eventID, interfaces.ErrNoData)
 }
 
-func (s *Storage) UpdateEvent(_ context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) UpdateEvent(_ context.Context, event *models.Event) (*models.Event, error) {
 	if event == nil {
 		return event, fmt.Errorf("не обновлено событие: %w", interfaces.ErrNoEvent)
 	}
@@ -66,7 +66,7 @@ func (s *Storage) UpdateEvent(_ context.Context, event *data.Event) (*data.Event
 	return event, fmt.Errorf("не обновлено событие с ID=%v: %w", event.ID, interfaces.ErrNoData)
 }
 
-func (s *Storage) DeleteEvent(_ context.Context, event *data.Event) (*data.Event, error) {
+func (s *Storage) DeleteEvent(_ context.Context, event *models.Event) (*models.Event, error) {
 	if event == nil {
 		return event, fmt.Errorf("не удалено событие: %w", interfaces.ErrNoEvent)
 	}
@@ -81,10 +81,10 @@ func (s *Storage) DeleteEvent(_ context.Context, event *data.Event) (*data.Event
 	return event, nil
 }
 
-func (s *Storage) ListEvents(cntx context.Context) ([]data.Event, error) {
+func (s *Storage) ListEvents(cntx context.Context) ([]models.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	events := make([]data.Event, 0, len(s.data))
+	events := make([]models.Event, 0, len(s.data))
 	for _, event := range s.data {
 		select {
 		case <-cntx.Done():
@@ -96,10 +96,10 @@ func (s *Storage) ListEvents(cntx context.Context) ([]data.Event, error) {
 	return events, nil
 }
 
-func (s *Storage) ListNotSheduledEvents(cntx context.Context) ([]data.Event, error) {
+func (s *Storage) ListNotSheduledEvents(cntx context.Context) ([]models.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	events := make([]data.Event, 0, len(s.data)/4)
+	events := make([]models.Event, 0, len(s.data)/4)
 	for _, event := range s.data {
 		select {
 		case <-cntx.Done():

@@ -7,7 +7,7 @@ import (
 type Event struct {
 	ID             int
 	Title          string        `json:"title"`
-	Time           time.Time     `json:"startat"`
+	Time           time.Time     `json:"starta"`
 	Duration       time.Duration `json:"duration"`
 	Description    string        `json:"description"`
 	Owner          string        `json:"owner"`

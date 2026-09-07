@@ -10,6 +10,6 @@ rpc:
   port: 5000
 storage:
   type: pgsqldtb
-  dsn: "user=user password=userpasswd host=db_host database=clendar search_path=calendar sslmode=disable port=5432"
+  dsn: "user=user password=userpasswd host=localhost database=clendar search_path=calendar sslmode=disable port=5432"
 logger:
   level: INFO

@@ -264,8 +264,8 @@ func TestStorage(t *testing.T) {
 	require.Equal(t, "не получено событие с ID=4: нет в БД", err.Error())
 	require.Nil(t, rEvent)
 
-	sqlListEvents := `SELECT "id", "title", "description", "startat", "durationseconds", "owner", 
-	"notifyearlyseconds", "sheduled" FROM events;`
+	sqlListEvents := `SELECT "id", "title", "description", "time", "duration", "owner", 
+	"notifyleadtime", "sheduled" FROM events;`
 
 	mock.
 		ExpectQuery(regexp.QuoteMeta(sqlListEvents)).
@@ -306,8 +306,8 @@ func TestStorage(t *testing.T) {
 	require.Equal(t, "список событий не получен: db connection error", err.Error())
 	require.Nil(t, events)
 
-	sqlListNotSheduledEvents := `SELECT "id", "title", "description", "startat", "durationseconds", "owner", 
-	"notifyearlyseconds", "sheduled" FROM events WHERE "sheduled" IS NOT TRUE;`
+	sqlListNotSheduledEvents := `SELECT "id", "title", "description", "time", "duration", "owner", 
+	"notifyleadtime", "sheduled" FROM events WHERE "sheduled" IS NOT TRUE;`
 
 	mock.
 		ExpectQuery(regexp.QuoteMeta(sqlListNotSheduledEvents)).

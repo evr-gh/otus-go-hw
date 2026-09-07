@@ -9,7 +9,7 @@ rpc:
   host: 1.2.3.4
   port: 5000
 storage:
-  type: pgsqldtb
+  type: pgх
   dsn: "user=user password=userpasswd host=db_host database=clendar search_path=calendar sslmode=disable port=5432"
 logger:
   level: INFO

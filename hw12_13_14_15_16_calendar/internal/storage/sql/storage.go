@@ -11,7 +11,7 @@ import (
 	// mysql driver.
 	_ "github.com/go-sql-driver/mysql"
 	// Postgersql driver.
-	_ "github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
 	// sqlite driver .
 	_ "github.com/mattn/go-sqlite3"
@@ -117,42 +117,45 @@ func (s *Storage) DeleteEvent(ctx context.Context, event *models.Event) (*models
 	return event, nil
 }
 
-func (s *Storage) ListEvents(ctx context.Context) ([]models.Event, error) {
+func (s *Storage) listEvents(ctx context.Context, sqlStatement string) ([]models.Event, error) {
 	var e models.Event
 	var events []models.Event
-	sqlStatement := `SELECT "id", "title", "description", "startat", "durationseconds", "owner", 
-	"notifyearlyseconds", "sheduled" FROM events;`
 	rows, err := s.db.QueryContext(ctx, sqlStatement)
 	if err != nil {
-		return nil, fmt.Errorf("список событий не получен: %w", err)
+		return nil, err
 	}
 	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&e.ID, &e.Title, &e.Description, &e.Time, &e.Duration, &e.Owner, &e.NotifyLeadTime, &e.Sheduled)
 		if err != nil {
-			return nil, fmt.Errorf("список событий не получен: %w", err)
+			return nil, err
 		}
 		events = append(events, e)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 	return events, nil
 }
 
+func (s *Storage) ListEvents(ctx context.Context) ([]models.Event, error) {
+	sqlStatement := `SELECT "id", "title", "description", "time", "duration", "owner", 
+	"notifyleadtime", "sheduled" FROM events;`
+
+	res, err := s.listEvents(ctx, sqlStatement)
+	if err != nil {
+		return nil, fmt.Errorf("список событий не получен: %w", err)
+	}
+	return res, nil
+}
+
 func (s *Storage) ListNotSheduledEvents(ctx context.Context) ([]models.Event, error) {
-	var e models.Event
-	var events []models.Event
-	sqlStatement := `SELECT "id", "title", "description", "startat", "durationseconds", "owner", 
-	"notifyearlyseconds", "sheduled" FROM events WHERE "sheduled" IS NOT TRUE;`
-	rows, err := s.db.QueryContext(ctx, sqlStatement)
+	sqlStatement := `SELECT "id", "title", "description", "time", "duration", "owner", 
+	"notifyleadtime", "sheduled" FROM events WHERE "sheduled" IS NOT TRUE;`
+
+	res, err := s.listEvents(ctx, sqlStatement)
 	if err != nil {
 		return nil, fmt.Errorf("список незапланированных событий не получен: %w", err)
 	}
-	defer rows.Close()
-	for rows.Next() {
-		err = rows.Scan(&e.ID, &e.Title, &e.Description, &e.Time, &e.Duration, &e.Owner, &e.NotifyLeadTime, &e.Sheduled)
-		if err != nil {
-			return nil, fmt.Errorf("список незапланированных событий не получен: %w", err)
-		}
-		events = append(events, e)
-	}
-	return events, nil
+	return res, nil
 }

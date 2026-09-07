@@ -31,7 +31,7 @@ func TestTelnetClient(t *testing.T) {
 
 		require.Equal(t, "pgsqldtb", cmdConfig.Storage.Type)
 		require.Equal(t,
-			"user=user password=userpasswd host=db_host database=clendar search_path=calendar sslmode=disable port=5432",
+			"user=user password=userpasswd host=localhost database=clendar search_path=calendar sslmode=disable port=5432",
 			cmdConfig.Storage.DSN)
 
 		require.Equal(t, logger.LogLevel("INFO"), cmdConfig.Logger.Level)

@@ -34,32 +34,9 @@ func newTestStorage(t *testing.T) *Storage {
 		}
 	})
 
-	//createSchema(t, storage)
 	truncateEvents(t, storage)
 
 	return storage
-}
-
-func createSchema(t *testing.T, storage *Storage) {
-	t.Helper()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	const query = `CREATE TABLE IF NOT EXISTS events (
-    id BIGSERIAL PRIMARY KEY,
-    title TEXT NOT NULL,
-    description TEXT NOT NULL,
-    "time" TIMESTAMPTZ NOT NULL,
-    duration BIGINT NOT NULL,
-    owner TEXT NOT NULL,
-    notifyleadtime BIGINT NOT NULL,
-    sheduled BOOLEAN NOT NULL DEFAULT FALSE
-);`
-
-	if _, err := storage.db.ExecContext(ctx, query); err != nil {
-		t.Fatalf("не удалось создать тестовую схему: %v", err)
-	}
 }
 
 func truncateEvents(t *testing.T, storage *Storage) {

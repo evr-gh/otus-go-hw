@@ -75,7 +75,7 @@ start_db:
 	docker compose -f ./deployments/docker-compose-test.yaml run --rm schema-init
 
 run_tests:
-	go test -v ./internal/... ./cmd/...
+	go test -race ./internal/... ./cmd/...
 
 stop_db:
 	docker compose -f deployments/docker-compose-test.yaml down -v

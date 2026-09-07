@@ -61,14 +61,24 @@ run-img: build-img
 version: build
 	$(BIN) version
 
-test:
-	go test -race ./internal/... ./cmd/...
+test: start_db run_tests stop_db
+	
 
 install-lint-deps:
 	(which golangci-lint > /dev/null) || curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v2.13.2
 
 lint: install-lint-deps
 	golangci-lint run ./...
+
+
+start_db:
+	docker compose -f ./deployments/docker-compose-test.yaml run --rm schema-init
+
+run_tests:
+	go test -v ./internal/... ./cmd/...
+
+stop_db:
+	docker compose -f deployments/docker-compose-test.yaml down -v
 
 
 

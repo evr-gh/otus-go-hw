@@ -80,7 +80,7 @@ func TestOutputFormat(t *testing.T) {
 	if !strings.HasSuffix(output, expected) {
 		t.Errorf("Выввод %s (%q) не содержит %q\n", logger.level, output, expected)
 	}
-	if !strings.HasPrefix(output, "INFO") {
+	if !strings.Contains(output, "[INFO]") {
 		t.Errorf("Выввод %s (%q) не содержит %q\n", logger.level, output, "INFO")
 	}
 }

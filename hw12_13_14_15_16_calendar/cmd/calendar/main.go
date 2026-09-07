@@ -11,6 +11,7 @@ import (
 	app "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app"
 	logger "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
 	internalhttp "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http"
+	"github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http/middleware"
 	storage "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage"
 	"github.com/spf13/pflag"
 )
@@ -39,7 +40,7 @@ func main() {
 
 	storage := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
 	calendar := app.New(logg, storage)
-
+	middleware.Init(logg)
 	server := internalhttp.NewServer(calendar,
 		cmdConfig.HTTP.Host,
 		cmdConfig.HTTP.Port,
@@ -59,14 +60,14 @@ func main() {
 		defer cancel()
 
 		if err := server.Stop(ctx); err != nil {
-			logg.Error("failed to stop http server: %v", err.Error())
+			logg.Error("Не удалось остановить HTTP сервер: %v", err.Error())
 		}
 	}()
 
-	logg.Info("calendar is running...")
+	logg.Info("Начало работы сервиса \"Календарь\"")
 
 	if err := server.Start(ctx); err != nil {
-		logg.Error("failed to start http server: %v", err.Error())
+		logg.Error("Не удалось запустить HTTP сервер: %v", err.Error())
 		stop()
 		os.Exit(1) //nolint:gocritic
 	}

@@ -13,7 +13,7 @@ import (
 	// Postgersql driver.
 	_ "github.com/jackc/pgx/v5"
 	"github.com/jmoiron/sqlx"
-	// sqlite driver.
+	// sqlite driver .
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -123,7 +123,6 @@ func (s *Storage) ListEvents(ctx context.Context) ([]models.Event, error) {
 	sqlStatement := `SELECT "id", "title", "description", "startat", "durationseconds", "owner", 
 	"notifyearlyseconds", "sheduled" FROM events;`
 	rows, err := s.db.QueryContext(ctx, sqlStatement)
-	fmt.Println(rows)
 	if err != nil {
 		return nil, fmt.Errorf("список событий не получен: %w", err)
 	}

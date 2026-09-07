@@ -8,52 +8,50 @@ import (
 	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 )
 
-type Middle struct {
+type Middleware struct {
 	logger interfaces.Logger
 }
 
 var (
-	middleware *Middle
+	middleware *Middleware
 	once       sync.Once
 )
 
-func Instance() *Middle {
+func Instance() *Middleware {
 	if middleware == nil {
 		panic("Middleware was not init by `Init(logger interfaces.Logger)`.")
 	}
 	return middleware
 }
 
-func Init(logger interfaces.Logger) *Middle {
+func Init(logger interfaces.Logger) *Middleware {
 	once.Do(func() {
-		middleware = &Middle{}
+		middleware = &Middleware{}
 		middleware.logger = logger
 	})
 	return middleware
 }
 
-func (m Middle) Listen(handler http.Handler) http.Handler {
+func (m Middleware) Listen(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		StartAt := time.Now()
 		lrw := NewLoggingResponseWriter(w)
 		handler.ServeHTTP(lrw, r)
 		a := struct {
-			StatusCode      int
-			UserAgent       string
 			ClientIPAddress string
+			StartAt         time.Time
 			HTTPMethod      string
 			HTTPVersion     string
 			URLPath         string
-			StartAt         time.Time
+			StatusCode      int
 			Latency         time.Duration
 		}{
-			StatusCode:      lrw.StatusCode,
-			UserAgent:       r.UserAgent(),
 			ClientIPAddress: r.RemoteAddr,
+			StartAt:         StartAt,
 			HTTPMethod:      r.Method,
 			HTTPVersion:     r.Proto,
 			URLPath:         r.URL.Path,
-			StartAt:         StartAt,
+			StatusCode:      lrw.StatusCode,
 			Latency:         time.Since(StartAt),
 		}
 		m.logger.Info("%+v", a)

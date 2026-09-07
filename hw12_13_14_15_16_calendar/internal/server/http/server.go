@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
@@ -13,15 +14,10 @@ import (
 )
 
 type Server struct {
-	server *http.Server
-	app    interfaces.Application
-	logger interfaces.Logger
-}
-
-type Logger interface { // TODO
-}
-
-type Application interface { // TODO
+	httpSrv *http.Server
+	app     interfaces.Application
+	logger  interfaces.Logger
+	context context.Context
 }
 
 func NewServer(app interfaces.Application,
@@ -34,28 +30,36 @@ func NewServer(app interfaces.Application,
 	logger interfaces.Logger,
 ) *Server {
 	mux := http.NewServeMux()
-	mux.Handle("/", middleware.Instance().Listen(http.HandlerFunc(hellowWord)))
-	server := http.Server{
+	mux.Handle("/hello", middleware.Instance().Listen(http.HandlerFunc(helloWord)))
+	server := new(Server)
+	server.app = app
+	server.logger = logger
+	server.context = context.Background()
+	server.httpSrv = &http.Server{
 		Addr:              net.JoinHostPort(host, fmt.Sprint(port)),
 		Handler:           mux,
 		ReadTimeout:       readTimeout,
 		ReadHeaderTimeout: readHeaderTimeout,
 		WriteTimeout:      writeTimeout,
 		MaxHeaderBytes:    maxHeaderBytes,
+		ErrorLog:          log.New(logger, "[ERROR]", log.LstdFlags|log.Lmsgprefix),
+		BaseContext: func(_ net.Listener) context.Context {
+			return server.context
+		},
 	}
-	return &Server{&server, app, logger}
+	return server
 }
 
-func hellowWord(w http.ResponseWriter, _ *http.Request) {
+func helloWord(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello Word!"))
+	fmt.Fprintln(w, "Hello, World!")
 }
 
 func (s *Server) Start(ctx context.Context) error {
-	_ = ctx // TODO: for what?
+	s.context = ctx
 	s.logger.Info("Запуск HTTP сервера")
 
-	if err := s.server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+	if err := s.httpSrv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 		s.logger.Error("Ошибка HTTP сервера: %v", err)
 		return fmt.Errorf("ошибка HTTP сервера: %w", err)
 	}
@@ -64,7 +68,7 @@ func (s *Server) Start(ctx context.Context) error {
 
 func (s *Server) Stop(ctx context.Context) error {
 	s.logger.Info("Останов HTTP сервера")
-	err := s.server.Shutdown(ctx)
+	err := s.httpSrv.Shutdown(ctx)
 	if err != nil {
 		s.logger.Error("Ошибка при останове HTTP сервера: %v", err)
 		return fmt.Errorf("ошибка при останове HTTP сервера: %w", err)

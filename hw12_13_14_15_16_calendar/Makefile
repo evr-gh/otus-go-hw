@@ -19,7 +19,7 @@ RABBIT_PORT_UI ?= 15672
 RABBIT_CONTAINER := rabbitmq
 
 
-TEST_DATABASE_DSN="postgres://user:userpasswd@localhost:5436/calendar?sslmode=disable&search_path=calendar"
+TEST_DATABASE_DSN="postgres://user:userpasswd@localhost:5432/calendar?sslmode=disable&search_path=calendar"
 
 
 run-postgres:

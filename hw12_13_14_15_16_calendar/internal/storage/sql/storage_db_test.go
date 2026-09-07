@@ -9,7 +9,7 @@ import (
 	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
 )
 
-const defaultTestDSN = "postgres://user:userpasswd@localhost:5432/calendar?sslmode=disable&search_path=calendar"
+const defaultTestDSN = "postgres://user:userpasswd@localhost:5436/calendar?sslmode=disable&search_path=calendar"
 
 func newTestStorage(t *testing.T) *Storage {
 	t.Helper()

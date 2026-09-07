@@ -19,6 +19,9 @@ RABBIT_PORT_UI ?= 15672
 RABBIT_CONTAINER := rabbitmq
 
 
+TEST_DATABASE_DSN="postgres://user:userpasswd@localhost:5436/calendar?sslmode=disable&search_path=calendar"
+
+
 run-postgres:
 	docker run -d --name $(POSTGRES_CONTAINER) \
 	-e POSTGRES_USER=$(POSTGRES_USER) \
@@ -75,7 +78,7 @@ start_db:
 	docker compose -f ./deployments/docker-compose-test.yaml run --rm schema-init
 
 run_tests:
-	go test -race ./internal/... ./cmd/...
+	export TEST_DATABASE_DSN=$(TEST_DATABASE_DSN); go test -race ./internal/... ./cmd/...
 
 stop_db:
 	docker compose -f deployments/docker-compose-test.yaml down -v

@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
 	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
+	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models"
 )
 
 const defaultTestDSN = "postgres://user:userpasswd@localhost:5432/calendar?sslmode=disable&search_path=calendar"

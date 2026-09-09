@@ -3,8 +3,8 @@ package app
 import (
 	"context"
 
-	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
 	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
+	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models"
 )
 
 type App struct {

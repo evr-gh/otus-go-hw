@@ -3,7 +3,7 @@ package interfaces
 import (
 	"context"
 
-	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
+	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models"
 )
 
 type Application interface {

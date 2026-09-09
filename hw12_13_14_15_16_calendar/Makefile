@@ -19,6 +19,9 @@ RABBIT_PORT_UI ?= 15672
 RABBIT_CONTAINER := rabbitmq
 
 
+TEST_DATABASE_DSN="postgres://user:userpasswd@localhost:5432/calendar?sslmode=disable&search_path=calendar"
+
+
 run-postgres:
 	docker run -d --name $(POSTGRES_CONTAINER) \
 	-e POSTGRES_USER=$(POSTGRES_USER) \
@@ -39,8 +42,15 @@ run-rabbit:
 build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd/calendar
 
+install-fmt-deps:
+	(which gofumpt > /dev/null) || go install mvdan.cc/gofumpt@latest
+
+fmt: install-fmt-deps
+	gofmt -w ./
+	gofumpt -l -w ./
+
 run: build
-	$(BIN) -config ./configs/config.toml
+	$(BIN) --config ./configs/config.yaml
 
 build-img:
 	docker build \
@@ -54,13 +64,26 @@ run-img: build-img
 version: build
 	$(BIN) version
 
-test:
-	go test -race ./internal/... ./pkg/...
+test: start_db run_tests stop_db
+	
 
 install-lint-deps:
-	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.57.2
+	(which golangci-lint > /dev/null) || curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v2.13.2
 
 lint: install-lint-deps
 	golangci-lint run ./...
+
+
+start_db:
+	docker compose -f ./deployments/docker-compose-test.yaml run --rm schema-init
+
+run_tests:
+	export TEST_DATABASE_DSN=$(TEST_DATABASE_DSN); go test -race ./internal/... ./cmd/...
+
+stop_db:
+	docker compose -f deployments/docker-compose-test.yaml down -v
+
+
+
 
 .PHONY: build run build-img run-img version test lint

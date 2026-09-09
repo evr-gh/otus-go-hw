@@ -1,6 +1,6 @@
 http: 
   host: 0.0.0.0
-  port: 8888
+  port: 8000
   readtimeout: "5s"
   readheadertimeout: "6s"
   writetimeout: "7s"
@@ -9,7 +9,7 @@ rpc:
   host: 1.2.3.4
   port: 5000
 storage:
-  type: pgх
-  dsn: "user=user password=userpasswd host=db_host database=clendar search_path=calendar sslmode=disable port=5432"
+  type: pgsqldtb
+  dsn: "user=user password=userpasswd host=localhost database=clendar search_path=calendar sslmode=disable port=5432"
 logger:
   level: INFO

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -53,7 +54,9 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
 	defer stop()
 
-	go func() {
+	wg := sync.WaitGroup{}
+
+	wg.Go(func() {
 		<-ctx.Done()
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
@@ -62,7 +65,7 @@ func main() {
 		if err := server.Stop(ctx); err != nil {
 			logg.Error("Не удалось остановить HTTP сервер: %v", err.Error())
 		}
-	}()
+	})
 
 	logg.Info("Начало работы сервиса \"Календарь\"")
 
@@ -71,4 +74,7 @@ func main() {
 		stop()
 		os.Exit(1) //nolint:gocritic
 	}
+
+	logg.Info("Завершение работы сервиса \"Календарь\"")
+	wg.Wait()
 }

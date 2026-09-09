@@ -66,7 +66,7 @@ linters:
             - github.com/jackc/pgx/v5
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/config
-            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http
@@ -90,7 +90,7 @@ linters:
             - github.com/jackc/pgx/v5
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/config
-            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http

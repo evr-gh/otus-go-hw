@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/data"
+	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models"
 	"github.com/stretchr/testify/require"
 )
 

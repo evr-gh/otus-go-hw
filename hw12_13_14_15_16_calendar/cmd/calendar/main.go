@@ -11,7 +11,7 @@ import (
 
 	app "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app"
 	logger "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
-	internalhttp "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http"
+	httpserver "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http"
 	"github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http/middleware"
 	storage "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage"
 	"github.com/spf13/pflag"
@@ -42,7 +42,7 @@ func main() {
 	storage := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
 	calendar := app.New(logg, storage)
 	middleware.Init(logg)
-	server := internalhttp.NewServer(calendar,
+	server := httpserver.NewServer(calendar,
 		cmdConfig.HTTP.Host,
 		cmdConfig.HTTP.Port,
 		cmdConfig.HTTP.ReadTimeout,

@@ -64,7 +64,7 @@ func (*Nill) Descriptor() ([]byte, []int) {
 
 type Event struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	Id             int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id             int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Title          string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 	Time           *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=time,proto3" json:"time,omitempty"`
 	Duration       *durationpb.Duration   `protobuf:"bytes,4,opt,name=duration,proto3" json:"duration,omitempty"`
@@ -106,7 +106,7 @@ func (*Event) Descriptor() ([]byte, []int) {
 	return file_internal_server_rpc_protobuf_calendar_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Event) GetId() int32 {
+func (x *Event) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
@@ -257,7 +257,7 @@ const file_internal_server_rpc_protobuf_calendar_proto_rawDesc = "" +
 	"+internal/server/rpc/protobuf/calendar.proto\x12\bcalendar\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x06\n" +
 	"\x04Nill\"\xab\x02\n" +
 	"\x05Event\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x14\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12.\n" +
 	"\x04time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x04time\x125\n" +
 	"\bduration\x18\x04 \x01(\v2\x19.google.protobuf.DurationR\bduration\x12 \n" +

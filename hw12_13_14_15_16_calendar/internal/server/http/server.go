@@ -1,4 +1,4 @@
-package internalhttp
+package httpserver
 
 import (
 	"context"

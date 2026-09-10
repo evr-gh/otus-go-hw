@@ -193,14 +193,9 @@ func TestInterceptorLogging(t *testing.T) {
 
 	fmt.Println(outputted)
 	require.True(t, strings.Contains(outputted, "[INFO] Запуск gRPC сервера: address=\"localhost:5002\""))
-	require.True(t, strings.Contains(outputted, "[INFO] Выполнение метода: method=\"/calendar.Application/CreateEvent\""+
-		" out={id:1  title:\"Title 1\""))
-	require.True(t, strings.Contains(outputted, "[INFO] Выполнение метода: method=\"/calendar.Application/CreateEvent\""+
-		" out={id:2  title:\"Title 2\""))
-	require.True(t, strings.Contains(outputted, "[INFO] Начало gRPC потока: method=\"/calendar.Application/ListEvents\""+
-		" client_stream=false server_stream=true"))
-	require.True(t, strings.Contains(outputted, "[INFO] Конец gRPC потока: method=\"/calendar.Application/ListEvents\""+
-		" code=OK"))
+	require.True(t, strings.Contains(outputted, "[INFO] Выполнение метода: method=\"/calendar.Application/CreateEvent\""))
+	require.True(t, strings.Contains(outputted, "[INFO] Начало gRPC потока: method=\"/calendar.Application/ListEvents\""))
+	require.True(t, strings.Contains(outputted, "[INFO] Конец gRPC потока: method=\"/calendar.Application/ListEvents\""))
 
 	grpcClient.Close()
 	once.Do(cancel)

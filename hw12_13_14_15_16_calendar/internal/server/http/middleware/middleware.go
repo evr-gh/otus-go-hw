@@ -19,7 +19,7 @@ var (
 
 func Instance() *Middleware {
 	if middleware == nil {
-		panic("Middleware was not init by `Init(logger interfaces.Logger)`.")
+		panic("Промежуточное ПО не инициализировано")
 	}
 	return middleware
 }
@@ -27,34 +27,20 @@ func Instance() *Middleware {
 func Init(logger interfaces.Logger) *Middleware {
 	once.Do(func() {
 		middleware = &Middleware{}
-		middleware.logger = logger
 	})
+	middleware.logger = logger
+
 	return middleware
 }
 
 func (m Middleware) Listen(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		StartAt := time.Now()
 		lrw := NewLoggingResponseWriter(w)
+		StartAt := time.Now()
 		handler.ServeHTTP(lrw, r)
-		a := struct {
-			ClientIPAddress string
-			StartAt         time.Time
-			HTTPMethod      string
-			HTTPVersion     string
-			URLPath         string
-			StatusCode      int
-			Latency         time.Duration
-		}{
-			ClientIPAddress: r.RemoteAddr,
-			StartAt:         StartAt,
-			HTTPMethod:      r.Method,
-			HTTPVersion:     r.Proto,
-			URLPath:         r.URL.Path,
-			StatusCode:      lrw.StatusCode,
-			Latency:         time.Since(StartAt),
-		}
-		m.logger.Info("%+v", a)
+		duration := time.Since(StartAt)
+		m.logger.Info("Выполнение метода: method=%s[%s]:%s from=%s time=%s code=%v duration=%s",
+			r.Method, r.Proto, r.URL.Path, r.RemoteAddr, StartAt, lrw.StatusCode, duration)
 	})
 }
 

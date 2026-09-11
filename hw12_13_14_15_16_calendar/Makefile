@@ -19,6 +19,9 @@ RABBIT_PORT_UI ?= 15672
 RABBIT_CONTAINER := rabbitmq
 
 
+#Protoc
+PROTOC_VERSION=36.1
+
 TEST_DATABASE_DSN="postgres://user:userpasswd@localhost:5432/calendar?sslmode=disable&search_path=calendar"
 
 
@@ -83,7 +86,12 @@ run_tests:
 stop_db:
 	docker compose -f deployments/docker-compose-test.yaml down -v
 
+protoc-deps:
+	(which protoc > /dev/null) || (curl -fsSL "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip" -o /tmp/protoc.zip && unzip -oq -d $(shell go env GOPATH) /tmp/protoc.zip)
 
+protoc: protoc-deps
+	protoc --go-grpc_out=./internal/server/rpc/rpcapi --go_out=./internal/server/rpc/rpcapi ./internal/server/rpc/protobuf/calendar.proto
 
+generate: protoc
 
 .PHONY: build run build-img run-img version test lint

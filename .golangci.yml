@@ -73,6 +73,16 @@ linters:
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/memory
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/sql
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/client
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/rpcapi
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/utils
+            - google.golang.org/grpc
+            - google.golang.org/grpc/status
+            - google.golang.org/grpc/credentials/insecure
+            - google.golang.org/protobuf/types/known/emptypb
+            - google.golang.org/protobuf/types/known/durationpb
+            - google.golang.org/protobuf/types/known/timestamppb
         Test:
           files:
             - $test
@@ -97,6 +107,16 @@ linters:
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/memory
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/sql
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/client
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/rpcapi
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/utils
+            - google.golang.org/grpc
+            - google.golang.org/grpc/status
+            - google.golang.org/grpc/credentials/insecure
+            - google.golang.org/protobuf/types/known/emptypb
+            - google.golang.org/protobuf/types/known/durationpb
+            - google.golang.org/protobuf/types/known/timestamppb
     funlen:
       lines: 150
       statements: 80

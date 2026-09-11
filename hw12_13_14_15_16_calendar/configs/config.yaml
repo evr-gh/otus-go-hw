@@ -6,8 +6,8 @@ http:
   writetimeout: "7s"
   maxheaderbytes: 65000
 rpc: 
-  host: 1.2.3.4
-  port: 5000
+  host: 0.0.0.0
+  port: 8889
 storage:
   type: pgх
   dsn: "user=user password=userpasswd host=db_host database=clendar search_path=calendar sslmode=disable port=5432"

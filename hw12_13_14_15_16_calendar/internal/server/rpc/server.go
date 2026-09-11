@@ -259,12 +259,6 @@ func (s *RPCServer) getServer() *grpc.Server {
 }
 
 func (s *RPCServer) Start(ctx context.Context, address string) error {
-	server := s.getServer()
-
-	if server != nil {
-		return errors.New("gRPC сервер уже запущен")
-	}
-
 	listenConfig := net.ListenConfig{}
 	listener, err := listenConfig.Listen(ctx, "tcp", address)
 	if err != nil {

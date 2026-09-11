@@ -73,6 +73,7 @@ linters:
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/memory
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/sql
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/client
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/rpcapi
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/utils
@@ -106,6 +107,7 @@ linters:
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/memory
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/sql
+            - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/client
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/rpcapi
             - github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/utils

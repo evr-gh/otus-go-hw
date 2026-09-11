@@ -189,13 +189,29 @@ func TestInterceptorLogging(t *testing.T) {
 	_, err = grpcClient.ListEvents(ctx)
 	require.NoError(t, err)
 
-	outputted := outputInto.String()
+	outputted := strings.Split(outputInto.String(), "\n")
 
 	fmt.Println(outputted)
-	require.True(t, strings.Contains(outputted, "[INFO] Запуск gRPC сервера: address=\"localhost:5002\""))
-	require.True(t, strings.Contains(outputted, "[INFO] Выполнение метода: method=\"/calendar.Application/CreateEvent\""))
-	require.True(t, strings.Contains(outputted, "[INFO] Начало gRPC потока: method=\"/calendar.Application/ListEvents\""))
-	require.True(t, strings.Contains(outputted, "[INFO] Конец gRPC потока: method=\"/calendar.Application/ListEvents\""))
+	require.Equalf(t, 12, len(outputted), "Неверное число сообщений")
+	require.True(t, strings.Contains(outputted[1], "[INFO] Запуск gRPC сервера: address=\"localhost:5002\""))
+	require.True(t, strings.Contains(outputted[2], "[DEBUG] Получено gRPC сообщение:"+
+		" method=\"/calendar.Application/CreateEvent\""))
+	require.True(t, strings.Contains(outputted[3], "[INFO] Выполнение метода:"+
+		" method=\"/calendar.Application/CreateEvent\""))
+	require.True(t, strings.Contains(outputted[4], "[DEBUG] Получено gRPC сообщение:"+
+		" method=\"/calendar.Application/CreateEvent\""))
+	require.True(t, strings.Contains(outputted[5], "[INFO] Выполнение метода:"+
+		" method=\"/calendar.Application/CreateEvent\""))
+	require.True(t, strings.Contains(outputted[6], "[INFO] Начало gRPC потока:"+
+		" method=\"/calendar.Application/ListEvents\""))
+	require.True(t, strings.Contains(outputted[7], "[DEBUG] Получено gRPC сообщение:"+
+		" method=\"/calendar.Application/ListEvents\" request={}"))
+	require.True(t, strings.Contains(outputted[8], "[DEBUG] Отправлено gRPC сообщение:"+
+		" method=\"/calendar.Application/ListEvents\""))
+	require.True(t, strings.Contains(outputted[9], "[DEBUG] Отправлено gRPC сообщение:"+
+		" method=\"/calendar.Application/ListEvents\""))
+	require.True(t, strings.Contains(outputted[10], "[INFO] Конец gRPC потока:"+
+		" method=\"/calendar.Application/ListEvents\""))
 
 	grpcClient.Close()
 	once.Do(cancel)

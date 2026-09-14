@@ -23,28 +23,13 @@ services:
         condition: service_healthy
     environment:
       PGPASSWORD: userpasswd
+    volumes:
+      - ../migrations/init.sql:/migrations/init.sql:ro
     entrypoint:
-      - /bin/sh
-      - -c
+      - psql
     command:
-      - |
-        psql \
-          --host postgres \
-          --username user \
-          --dbname calendar \
-          --set ON_ERROR_STOP=1 <<'SQL'
-
-        CREATE SCHEMA IF NOT EXISTS calendar AUTHORIZATION "user";
-
-        CREATE TABLE IF NOT EXISTS calendar.events (
-            id BIGSERIAL PRIMARY KEY,
-            title TEXT NOT NULL,
-            description TEXT NOT NULL,
-            "time" TIMESTAMPTZ NOT NULL,
-            duration BIGINT NOT NULL,
-            owner TEXT NOT NULL,
-            notifyleadtime BIGINT NOT NULL,
-            sheduled BOOLEAN NOT NULL DEFAULT FALSE
-        );
-
-        SQL
+      - --host=postgres
+      - --username=user
+      - --dbname=calendar
+      - --set=ON_ERROR_STOP=1
+      - --file=/migrations/init.sql

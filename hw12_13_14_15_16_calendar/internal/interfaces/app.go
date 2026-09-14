@@ -7,6 +7,9 @@ import (
 )
 
 type Application interface {
+	Start(ctx context.Context) error
+	Close() error
+
 	CreateEvent(ctx context.Context, event *models.Event) (*models.Event, error)
 	ReadEvent(ctx context.Context, id int) (*models.Event, error)
 	UpdateEvent(ctx context.Context, event *models.Event) (*models.Event, error)

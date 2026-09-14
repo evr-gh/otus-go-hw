@@ -40,6 +40,7 @@ func main() {
 
 	storage := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
 	calendar := app.New(logg, storage)
+
 	middleware.Init(logg)
 	server := internalhttp.NewServer(calendar,
 		cmdConfig.HTTP.Host,
@@ -52,6 +53,13 @@ func main() {
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
 	defer stop()
+
+	err = calendar.Start(ctx)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
+	defer calendar.Close()
 
 	go func() {
 		<-ctx.Done()

@@ -56,8 +56,8 @@ func (s *Storage) UpdateEvent(_ context.Context, event *models.Event) (*models.E
 	if event == nil {
 		return event, fmt.Errorf("не обновлено событие: %w", interfaces.ErrNoEvent)
 	}
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	_, exists := s.data[event.ID]
 	if exists {
 		s.data[event.ID] = event
@@ -70,8 +70,8 @@ func (s *Storage) DeleteEvent(_ context.Context, event *models.Event) (*models.E
 	if event == nil {
 		return event, fmt.Errorf("не удалено событие: %w", interfaces.ErrNoEvent)
 	}
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	_, exists := s.data[event.ID]
 	if exists {
 		delete(s.data, event.ID)

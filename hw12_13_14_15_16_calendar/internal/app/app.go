@@ -16,56 +16,38 @@ func New(logger interfaces.Logger, storage interfaces.Storage) *App {
 	return &App{logger, storage}
 }
 
-func (a *App) CreateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
+func (a *App) Start(ctx context.Context) error {
 	err := a.storage.Connect(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	defer a.storage.Close()
+	return nil
+}
+
+func (a *App) Close() error {
+	return a.storage.Close()
+}
+
+func (a *App) CreateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
 	return a.storage.CreateEvent(ctx, event)
 }
 
 func (a *App) ReadEvent(ctx context.Context, id int) (*models.Event, error) {
-	err := a.storage.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer a.storage.Close()
 	return a.storage.ReadEvent(ctx, id)
 }
 
 func (a *App) UpdateEvent(ctx context.Context, e *models.Event) (*models.Event, error) {
-	err := a.storage.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer a.storage.Close()
 	return a.storage.UpdateEvent(ctx, e)
 }
 
 func (a *App) DeleteEvent(ctx context.Context, e *models.Event) (*models.Event, error) {
-	err := a.storage.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer a.storage.Close()
 	return a.storage.DeleteEvent(ctx, e)
 }
 
 func (a *App) ListEvents(ctx context.Context) ([]models.Event, error) {
-	err := a.storage.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer a.storage.Close()
 	return a.storage.ListEvents(ctx)
 }
 
 func (a *App) ListNotSheduledEvents(ctx context.Context) ([]models.Event, error) {
-	err := a.storage.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer a.storage.Close()
 	return a.storage.ListNotSheduledEvents(ctx)
 }

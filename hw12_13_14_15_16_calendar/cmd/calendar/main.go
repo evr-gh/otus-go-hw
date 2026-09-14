@@ -19,7 +19,7 @@ import (
 var configFile string
 
 func init() {
-	pflag.StringVar(&configFile, "config", "/etc/calendar/config.toml", "Path to configuration file")
+	pflag.StringVar(&configFile, "config", "/etc/calendar/config.yaml", "Path to configuration file")
 }
 
 func main() {
@@ -33,13 +33,12 @@ func main() {
 	cmdConfig, err := readConfig(configFile)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		return
+		os.Exit(1)
 	}
 
 	logg := logger.New(cmdConfig.Logger.Level, os.Stdout)
 
-	storage := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
-	calendar := app.New(logg, storage)
+	calendar := app.New(logg, storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN))
 
 	middleware.Init(logg)
 	server := internalhttp.NewServer(calendar,
@@ -57,7 +56,8 @@ func main() {
 	err = calendar.Start(ctx)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		return
+		stop()
+		os.Exit(1) //nolint:gocritic
 	}
 	defer calendar.Close()
 
@@ -76,7 +76,8 @@ func main() {
 
 	if err := server.Start(ctx); err != nil {
 		logg.Error("Не удалось запустить HTTP сервер: %v", err.Error())
+		calendar.Close()
 		stop()
-		os.Exit(1) //nolint:gocritic
+		os.Exit(1)
 	}
 }

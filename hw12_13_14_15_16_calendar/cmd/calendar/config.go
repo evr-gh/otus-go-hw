@@ -22,6 +22,7 @@ func readConfig(configFile string) (*config.CalendarConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("fail to open configuration file: %w", err)
 	}
+	defer file.Close()
 
 	viper.ReadConfig(file)
 	cmdConfig := config.NewCalendarConfig()

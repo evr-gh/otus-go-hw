@@ -61,14 +61,15 @@ func TestServerCode(t *testing.T) {
 
 	outputted := outputInto.String()
 
-	require.True(t, strings.Contains(outputted, "Запуск HTTP сервера"))
-	require.True(t, strings.Contains(outputted, "ClientIPAddress:127.0.0.1"))
-	require.True(t, strings.Contains(outputted, "StatusCode:200"))
-	require.True(t, strings.Contains(outputted, "HTTPMethod:POST"))
-	require.True(t, strings.Contains(outputted, "HTTPVersion:"))
-	require.True(t, strings.Contains(outputted, "URLPath:/hello"))
-	require.True(t, strings.Contains(outputted, "Latency:"))
-	require.True(t, strings.Contains(outputted, "Останов HTTP сервера"))
+	require.Truef(t, strings.Contains(outputted, "Запуск HTTP сервера"), outputted)
+	require.Truef(t, strings.Contains(outputted, "ClientIPAddress:127.0.0.1"), outputted)
+	require.Truef(t, strings.Contains(outputted, "StatusCode:200"), outputted)
+	require.Truef(t, strings.Contains(outputted, "HTTPMethod:POST"), outputted)
+	require.Truef(t, strings.Contains(outputted, "HTTPVersion:"), outputted)
+	require.Truef(t, strings.Contains(outputted, "URLPath:/hello"), outputted)
+	require.Truef(t, strings.Contains(outputted, "UserAgent:Go-http-client/1.1"), outputted)
+	require.Truef(t, strings.Contains(outputted, "Latency:"), outputted)
+	require.Truef(t, strings.Contains(outputted, "Останов HTTP сервера"), outputted)
 }
 
 func TestServerErrCode(t *testing.T) {

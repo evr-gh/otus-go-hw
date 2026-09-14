@@ -43,6 +43,7 @@ func (m Middleware) Listen(handler http.Handler) http.Handler {
 			HTTPMethod      string
 			HTTPVersion     string
 			URLPath         string
+			UserAgent       string
 			StatusCode      int
 			Latency         time.Duration
 		}{
@@ -51,6 +52,7 @@ func (m Middleware) Listen(handler http.Handler) http.Handler {
 			HTTPMethod:      r.Method,
 			HTTPVersion:     r.Proto,
 			URLPath:         r.URL.Path,
+			UserAgent:       r.UserAgent(),
 			StatusCode:      lrw.StatusCode,
 			Latency:         time.Since(StartAt),
 		}

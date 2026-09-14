@@ -85,6 +85,8 @@ func TestAdd1TelnetClient(t *testing.T) {
 		go func() {
 			defer wg.Done()
 
+			time.Sleep(1 * time.Second)
+
 			in := &bytes.Buffer{}
 			out := &bytes.Buffer{}
 

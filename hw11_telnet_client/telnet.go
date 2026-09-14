@@ -82,40 +82,18 @@ func (c *Client) Close() error {
 	return nil
 }
 
-func (c *Client) Send(ctx context.Context) error {
+func (c *Client) Send(_ context.Context) error {
 	if c.Connection == nil {
 		err := ErrSendNoConnection
-		fmt.Fprintf(os.Stderr, "Oшибка передачи данных: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Oшибка передачи данных: %v\n", ErrSendNoConnection)
 		return err
 	}
 
-	inChan := make(chan string)
-	go func() {
-		defer close(inChan)
-		scanner := bufio.NewScanner(c.In)
-		for scanner.Scan() {
-			txt := scanner.Text()
-			inChan <- txt
-		}
-		if scanner.Err() != nil {
-			fmt.Fprintf(os.Stderr, "Ошибка при получении данных: %v\n", scanner.Err())
-		}
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return nil
-		case str, ok := <-inChan:
-			if !ok {
-				return nil
-			}
-			if _, err := fmt.Fprintf(c.Connection, "%s\n", str); err != nil {
-				fmt.Fprintf(os.Stderr, "Oшибка передачи данных: %v\n", err)
-				return err
-			}
-		}
+	if _, err := io.Copy(c.Connection, c.In); err != nil {
+		fmt.Fprintf(os.Stderr, "Oшибка передачи данных: %v\n", err)
+		return err
 	}
+	return nil
 }
 
 func (c *Client) Receive(ctx context.Context) error {

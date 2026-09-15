@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+
+	"github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 )
 
 const (
@@ -15,7 +17,7 @@ const (
 
 func TestLogger(t *testing.T) {
 	testCases := []struct {
-		level            LogLevel
+		level            interfaces.LogLevel
 		debugMessage     string
 		infoMessage      string
 		warningMessage   string
@@ -23,7 +25,7 @@ func TestLogger(t *testing.T) {
 		expectedMessages []string
 	}{
 		{
-			DEBUG,
+			interfaces.DEBUG,
 			debugMsg,
 			infoMsg,
 			warningMsg,
@@ -31,7 +33,7 @@ func TestLogger(t *testing.T) {
 			[]string{debugMsg, infoMsg, warningMsg, errorMsg},
 		},
 		{
-			INFO,
+			interfaces.INFO,
 			debugMsg,
 			infoMsg,
 			warningMsg,
@@ -39,7 +41,7 @@ func TestLogger(t *testing.T) {
 			[]string{infoMsg, warningMsg, errorMsg},
 		},
 		{
-			WARNING,
+			interfaces.WARNING,
 			debugMsg,
 			infoMsg,
 			warningMsg,
@@ -47,7 +49,7 @@ func TestLogger(t *testing.T) {
 			[]string{warningMsg, errorMsg},
 		},
 		{
-			ERROR,
+			interfaces.ERROR,
 			debugMsg,
 			infoMsg,
 			"предупреждение",

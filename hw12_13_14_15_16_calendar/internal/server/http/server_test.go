@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app"
+	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 	logger "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
 	middleware "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http/middleware"
 	"github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage"
@@ -29,7 +30,7 @@ func TestServerCode(t *testing.T) {
 	const port uint16 = 5021
 
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
 	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
@@ -64,13 +65,17 @@ func TestServerCode(t *testing.T) {
 	require.Truef(t, strings.Contains(outputted, "[INFO] Запуск HTTP сервера"), outputted)
 	require.Truef(t, strings.Contains(outputted, "[INFO] Выполнение метода:"+
 		" method=POST[HTTP/1.1]:/hello from=127.0.0.1"), outputted)
+	require.Truef(t, strings.Contains(outputted, "user_agent=Go-http-client/1.1"), outputted)
+	require.Truef(t, strings.Contains(outputted, "code=200"), outputted)
+	require.Truef(t, strings.Contains(outputted, "duration="), outputted)
+	require.Truef(t, strings.Contains(outputted, "time="), outputted)
 	require.Truef(t, strings.Contains(outputted, "Останов HTTP сервера"), outputted)
 }
 
 func TestServerErrCode(t *testing.T) {
 	const port uint16 = 5022
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
 	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
@@ -108,7 +113,7 @@ func TestServerErrCode(t *testing.T) {
 func TestServerStopNotStarted(t *testing.T) {
 	const port uint16 = 5023
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
 	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
@@ -120,7 +125,7 @@ func TestServerStopNotStarted(t *testing.T) {
 func TestServerStopNormally(t *testing.T) {
 	const port uint16 = 5024
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
 	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
@@ -142,7 +147,7 @@ func TestServerStopBySignal(t *testing.T) {
 	defer ctxCancel()
 
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
 	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
@@ -174,7 +179,7 @@ func TestServerStopBySignalAfterDelay(t *testing.T) {
 	defer ctxCancel()
 
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
 	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
@@ -206,10 +211,12 @@ func TestServerStopByCancel(t *testing.T) {
 	ctx, ctxCancel := context.WithCancel(context.Background())
 	outputInto := &bytes.Buffer{}
 
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
-	calendarApp := app.New(logg, storage.New("memory", ""))
+	srg, err := storage.New("memory", "")
+	require.NoError(t, err)
+	calendarApp := app.New(logg, srg)
 	httpServer := NewHTTPServer(calendarApp, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
 	wg := sync.WaitGroup{}
 	wg.Go(func() {

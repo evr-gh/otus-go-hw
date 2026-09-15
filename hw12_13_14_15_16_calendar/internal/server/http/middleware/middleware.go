@@ -39,8 +39,8 @@ func (m Middleware) Listen(handler http.Handler) http.Handler {
 		StartAt := time.Now()
 		handler.ServeHTTP(lrw, r)
 		duration := time.Since(StartAt)
-		m.logger.Info("Выполнение метода: method=%s[%s]:%s from=%s time=%s code=%v duration=%s",
-			r.Method, r.Proto, r.URL.Path, r.RemoteAddr, StartAt, lrw.StatusCode, duration)
+		m.logger.Info("Выполнение метода: method=%s[%s]:%s from=%s user_agent=%s time=%s code=%v duration=%s",
+			r.Method, r.Proto, r.URL.Path, r.RemoteAddr, r.UserAgent(), StartAt, lrw.StatusCode, duration)
 	})
 }
 

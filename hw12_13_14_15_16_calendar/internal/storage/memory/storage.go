@@ -37,7 +37,7 @@ func (s *Storage) CreateEvent(_ context.Context, event *models.Event) (*models.E
 	defer s.mu.Unlock()
 	s.counter++
 	event.ID = s.counter
-	event.Sheduled = false
+	event.Scheduled = false
 	s.data[event.ID] = event
 	return event, nil
 }
@@ -56,8 +56,8 @@ func (s *Storage) UpdateEvent(_ context.Context, event *models.Event) (*models.E
 	if event == nil {
 		return event, fmt.Errorf("не обновлено событие: %w", interfaces.ErrNoEvent)
 	}
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	_, exists := s.data[event.ID]
 	if exists {
 		s.data[event.ID] = event
@@ -70,8 +70,8 @@ func (s *Storage) DeleteEvent(_ context.Context, event *models.Event) (*models.E
 	if event == nil {
 		return event, fmt.Errorf("не удалено событие: %w", interfaces.ErrNoEvent)
 	}
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	_, exists := s.data[event.ID]
 	if exists {
 		delete(s.data, event.ID)
@@ -96,7 +96,7 @@ func (s *Storage) ListEvents(cntx context.Context) ([]models.Event, error) {
 	return events, nil
 }
 
-func (s *Storage) ListNotSheduledEvents(cntx context.Context) ([]models.Event, error) {
+func (s *Storage) ListNotScheduledEvents(cntx context.Context) ([]models.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	events := make([]models.Event, 0, len(s.data)/4)
@@ -105,7 +105,7 @@ func (s *Storage) ListNotSheduledEvents(cntx context.Context) ([]models.Event, e
 		case <-cntx.Done():
 			return events, fmt.Errorf("список незапланированных событий не получен: %w", interfaces.ErrOpInterrupt)
 		default:
-			if !event.Sheduled {
+			if !event.Scheduled {
 				events = append(events, *event)
 			}
 		}

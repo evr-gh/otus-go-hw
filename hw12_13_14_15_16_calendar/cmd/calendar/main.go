@@ -21,7 +21,7 @@ import (
 var configFile string
 
 func init() {
-	pflag.StringVar(&configFile, "config", "/etc/calendar/config.toml", "Path to configuration file")
+	pflag.StringVar(&configFile, "config", "/etc/calendar/config.yaml", "Path to configuration file")
 }
 
 func main() {
@@ -35,13 +35,37 @@ func main() {
 	cmdConfig, err := readConfig(configFile)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		return
+		os.Exit(1)
 	}
 
-	logg := logger.New(cmdConfig.Logger.Level, os.Stdout)
+	var logFile *os.File
+	var logg *logger.Logger
 
-	storage := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
-	calendar := app.New(logg, storage)
+	if cmdConfig.Logger.File != "" {
+		logFile, err = os.Create(cmdConfig.Logger.File)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Не удалось создать файл для сохранения лога: %v", err)
+			os.Exit(1)
+		}
+		defer logFile.Close()
+		logg = logger.New(cmdConfig.Logger.Level, logFile)
+
+		fmt.Println(cmdConfig.Logger.File)
+	} else {
+		logg = logger.New(cmdConfig.Logger.Level, os.Stdout)
+	}
+
+	stg, err := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		if logFile != nil {
+			logFile.Close()
+		}
+		os.Exit(1) //nolint:gocritic
+	}
+
+	calendar := app.New(logg, stg)
+
 	middleware.Init(logg)
 	httpServer := httpserver.NewHTTPServer(calendar,
 		cmdConfig.HTTP.Host,
@@ -75,6 +99,15 @@ func main() {
 		rpcServer.GracefulStop()
 	})
 
+	if err := server.Start(ctx); err != nil {
+		logg.Error("Не удалось запустить HTTP сервер: %v", err.Error())
+		calendar.Close()
+		stop()
+		if logFile != nil {
+			logFile.Close()
+		}
+		os.Exit(1)
+	}
 	wg.Go(func() {
 		if err := httpServer.Start(ctx); err != nil {
 			logg.Error("Не удалось запустить HTTP сервер: %v", err.Error())

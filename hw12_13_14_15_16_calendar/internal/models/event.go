@@ -12,5 +12,5 @@ type Event struct {
 	Description    string        `json:"description"`
 	Owner          string        `json:"owner"`
 	NotifyLeadTime time.Duration `json:"notifyleadtime"`
-	Sheduled       bool          `json:"sheduled"`
+	Scheduled      bool          `json:"scheduled"`
 }

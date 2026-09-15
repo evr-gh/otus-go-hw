@@ -7,10 +7,13 @@ import (
 )
 
 type Application interface {
+	Start(ctx context.Context) error
+	Close() error
+
 	CreateEvent(ctx context.Context, event *models.Event) (*models.Event, error)
 	ReadEvent(ctx context.Context, id int) (*models.Event, error)
 	UpdateEvent(ctx context.Context, event *models.Event) (*models.Event, error)
 	DeleteEvent(ctx context.Context, event *models.Event) (*models.Event, error)
 	ListEvents(ctx context.Context) ([]models.Event, error)
-	ListNotSheduledEvents(ctx context.Context) ([]models.Event, error)
+	ListNotScheduledEvents(ctx context.Context) ([]models.Event, error)
 }

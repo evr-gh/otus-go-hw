@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	logger "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
+	"github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 	"github.com/stretchr/testify/require"
 )
 
@@ -34,7 +34,7 @@ func TestTelnetClient(t *testing.T) {
 			"user=user password=userpasswd host=localhost database=clendar search_path=calendar sslmode=disable port=5432",
 			cmdConfig.Storage.DSN)
 
-		require.Equal(t, logger.LogLevel("INFO"), cmdConfig.Logger.Level)
+		require.Equal(t, interfaces.LogLevel("INFO"), cmdConfig.Logger.Level)
 	})
 
 	t.Run("no conf file", func(t *testing.T) {

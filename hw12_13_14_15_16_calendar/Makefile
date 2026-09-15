@@ -52,7 +52,9 @@ fmt: install-fmt-deps
 	gofmt -w ./
 	gofumpt -l -w ./
 
-run: build
+run: start_db run_cmd stop_db
+
+run_cmd: build
 	$(BIN) --config ./configs/config.yaml
 
 build-img:
@@ -71,7 +73,7 @@ test: start_db run_tests stop_db
 	
 
 install-lint-deps:
-	(which golangci-lint > /dev/null) || curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v2.13.2
+	(which golangci-lint > /dev/null) || curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v2.11.4
 
 lint: install-lint-deps
 	golangci-lint run ./...

@@ -93,7 +93,7 @@ func (s *RPCServer) ListEvents(_ *emptypb.Empty, stream calendarrpcapi.Applicati
 func (s *RPCServer) ListNotSheduledEvents(_ *emptypb.Empty,
 	stream calendarrpcapi.Application_ListNotSheduledEventsServer,
 ) error {
-	events, err := s.app.ListNotSheduledEvents(stream.Context())
+	events, err := s.app.ListNotScheduledEvents(stream.Context())
 	if err != nil {
 		return err
 	}

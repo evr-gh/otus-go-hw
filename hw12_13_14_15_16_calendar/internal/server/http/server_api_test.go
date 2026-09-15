@@ -13,6 +13,7 @@ import (
 	"time"
 
 	app "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app"
+	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 	logger "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
 	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models"
 	middleware "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http/middleware"
@@ -42,7 +43,7 @@ func TestServerAPI(t *testing.T) {
 	ctx := context.Background()
 
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
 	calendarApp := app.New(logg, storage.New())
@@ -121,7 +122,7 @@ func TestServerAPI(t *testing.T) {
 	response.Body.Close()
 
 	requestOfUpdate := fmt.Sprintf("http://%s:%d/api/events/3/update", host, port)
-	payloadOfUpdateRaw := `{"title": "title 3 updated", "startat": "2023-08-05T21:54:55+02:00", "sheduled":true}`
+	payloadOfUpdateRaw := `{"title": "title 3 updated", "startat": "2023-08-05T21:54:55+02:00", "Scheduled":true}`
 	payloadOfUpdate := strings.NewReader(payloadOfUpdateRaw)
 	request, err = http.NewRequestWithContext(ctx, "PATCH", requestOfUpdate, payloadOfUpdate)
 	require.NoErrorf(t, err, "Не удалось создать запрос на обновление события 3")
@@ -134,7 +135,8 @@ func TestServerAPI(t *testing.T) {
 	require.Equal(t, 3, apiResponse.Data.Item.ID, "Неверный ID в ответе на запрос на обновление события 3")
 	require.Equal(t, "title 3 updated", apiResponse.Data.Item.Title, "Неверный Title в ответе"+
 		" на запрос на обновление события 3")
-	require.Equal(t, true, apiResponse.Data.Item.Sheduled, "Неверный Sheduled в ответе на запрос на обновление события 3")
+	require.Equal(t, true, apiResponse.Data.Item.Scheduled,
+		"Неверный Scheduled в ответе на запрос на обновление события 3")
 	response.Body.Close()
 
 	requestOfGet := fmt.Sprintf("http://%s:%d/api/events/3", host, port)
@@ -150,7 +152,7 @@ func TestServerAPI(t *testing.T) {
 	require.Equal(t, 3, apiResponse.Data.Item.ID, "Неверный ID в ответе на запрос на получение события 3")
 	require.Equal(t, "title 3 updated", apiResponse.Data.Item.Title, "Неверный Title в ответе"+
 		" на запрос на получение события 3")
-	require.Equal(t, true, apiResponse.Data.Item.Sheduled, "Неверный Sheduled в ответе на запрос на получение события 3")
+	require.Equal(t, true, apiResponse.Data.Item.Scheduled, "Неверный Scheduled в ответе на запрос на получение события 3")
 	response.Body.Close()
 
 	var apiMultyResponse1 APIMultyResponseTest
@@ -195,7 +197,7 @@ func TestServerAPIVersion(t *testing.T) {
 	ctx := context.Background()
 
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.INFO, outputInto)
+	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 	calendarApp := app.New(logg, storage.New())
 

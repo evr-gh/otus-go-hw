@@ -22,7 +22,7 @@ func EventToGRpcEvent(event *models.Event) *rpcapi.Event {
 		pbEvent.Duration = durationpb.New(event.Duration)
 		pbEvent.Owner = event.Owner
 		pbEvent.Notifyleadtime = durationpb.New(event.NotifyLeadTime)
-		pbEvent.Sheduled = event.Sheduled
+		pbEvent.Scheduled = event.Scheduled
 		return pbEvent
 	}
 	return nil
@@ -38,7 +38,7 @@ func GRpcEventToEvent(pbEvent *rpcapi.Event) *models.Event {
 		event.Duration = pbEvent.Duration.AsDuration()
 		event.Owner = pbEvent.Owner
 		event.NotifyLeadTime = pbEvent.Notifyleadtime.AsDuration()
-		event.Sheduled = pbEvent.Sheduled
+		event.Scheduled = pbEvent.Scheduled
 		return event
 	}
 	return nil

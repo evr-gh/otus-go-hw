@@ -27,7 +27,7 @@ func (h EventsListHandler) ServeHTTP(rw http.ResponseWriter, rr *http.Request) {
 	var events []models.Event
 	var err error
 	if h.APIMethod == "api.events.listnotsheduled" {
-		events, err = h.App.ListNotSheduledEvents(rr.Context())
+		events, err = h.App.ListNotScheduledEvents(rr.Context())
 	} else {
 		events, err = h.App.ListEvents(rr.Context())
 	}

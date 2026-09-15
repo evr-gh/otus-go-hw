@@ -11,6 +11,7 @@ import (
 	"time"
 
 	app "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app"
+	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 	logger "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
 	client "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/client"
 	pb "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/rpc/rpcapi"
@@ -33,7 +34,7 @@ func newEvent(title string, shd bool) *pb.Event {
 		Duration:       durationpb.New(time.Hour),
 		Owner:          "rpc-test-user",
 		Notifyleadtime: durationpb.New(25 * time.Minute),
-		Sheduled:       shd,
+		Scheduled:      shd,
 	}
 }
 
@@ -56,7 +57,7 @@ func assertEventsEqual(t *testing.T, want, got *pb.Event) {
 
 	require.Equal(t, want.Notifyleadtime.AsDuration(), got.Notifyleadtime.AsDuration())
 
-	require.Equal(t, want.Sheduled, got.Sheduled)
+	require.Equal(t, want.Scheduled, got.Scheduled)
 }
 
 func TestRpcServer(t *testing.T) {
@@ -64,8 +65,11 @@ func TestRpcServer(t *testing.T) {
 	var once sync.Once
 	defer once.Do(cancel)
 
-	logg := logger.New(logger.INFO, os.Stdout)
-	storage := storage.New(storage.MemoryStorage, "")
+	logg := logger.New(interfaces.INFO, os.Stdout)
+
+	storage, err := storage.New(storage.MemoryStorage, "")
+	require.NoError(t, err)
+
 	calendar := app.New(logg, storage)
 	grpcServer := NewRPCServer(calendar, logg)
 
@@ -85,7 +89,7 @@ func TestRpcServer(t *testing.T) {
 
 	grpcClient := client.Client{}
 	logg.Info("Подключение клиента к серверу (%s)", testServerAddress1)
-	err := grpcClient.Connect(testServerAddress1)
+	err = grpcClient.Connect(testServerAddress1)
 	require.NoError(t, err)
 
 	pbEvent1 := newEvent("Title 1", false)
@@ -115,7 +119,7 @@ func TestRpcServer(t *testing.T) {
 	require.NoError(t, err)
 	assertEventsEqual(t, createdEvent3, pbEvent3Copy)
 
-	createdEvent3.Sheduled = true
+	createdEvent3.Scheduled = true
 	pbEvent3Updated, err := grpcClient.UpdateEvent(ctx, createdEvent3)
 	require.NoError(t, err)
 	assertEventsEqual(t, createdEvent3, pbEvent3Updated)
@@ -155,9 +159,11 @@ func TestInterceptorLogging(t *testing.T) {
 	defer once.Do(cancel)
 
 	outputInto := &bytes.Buffer{}
-	logg := logger.New(logger.DEBUG, outputInto)
+	logg := logger.New(interfaces.DEBUG, outputInto)
 
-	storage := storage.New(storage.MemoryStorage, "")
+	storage, err := storage.New(storage.MemoryStorage, "")
+	require.NoError(t, err)
+
 	calendar := app.New(logg, storage)
 	grpcServer := NewRPCServer(calendar, logg)
 

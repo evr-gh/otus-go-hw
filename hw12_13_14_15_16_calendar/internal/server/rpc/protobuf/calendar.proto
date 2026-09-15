@@ -29,7 +29,7 @@ message Event {
   string description   = 5;
   string owner         = 6;
   google.protobuf.Duration notifyleadtime = 7;
-  bool  sheduled       = 8;
+  bool  Scheduled       = 8;
 } 
 
 message Error {

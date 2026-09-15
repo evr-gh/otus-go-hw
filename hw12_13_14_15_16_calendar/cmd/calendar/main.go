@@ -63,9 +63,7 @@ func main() {
 		}
 		os.Exit(1) //nolint:gocritic
 	}
-
 	calendar := app.New(logg, stg)
-
 	middleware.Init(logg)
 	httpServer := httpserver.NewHTTPServer(calendar,
 		cmdConfig.HTTP.Host,
@@ -99,15 +97,6 @@ func main() {
 		rpcServer.GracefulStop()
 	})
 
-	if err := server.Start(ctx); err != nil {
-		logg.Error("Не удалось запустить HTTP сервер: %v", err.Error())
-		calendar.Close()
-		stop()
-		if logFile != nil {
-			logFile.Close()
-		}
-		os.Exit(1)
-	}
 	wg.Go(func() {
 		if err := httpServer.Start(ctx); err != nil {
 			logg.Error("Не удалось запустить HTTP сервер: %v", err.Error())

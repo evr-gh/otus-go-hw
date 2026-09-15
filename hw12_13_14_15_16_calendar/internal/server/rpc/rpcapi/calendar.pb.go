@@ -9,14 +9,15 @@
 package calendarrpcapi
 
 import (
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -71,7 +72,7 @@ type Event struct {
 	Description    string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
 	Owner          string                 `protobuf:"bytes,6,opt,name=owner,proto3" json:"owner,omitempty"`
 	Notifyleadtime *durationpb.Duration   `protobuf:"bytes,7,opt,name=notifyleadtime,proto3" json:"notifyleadtime,omitempty"`
-	Sheduled       bool                   `protobuf:"varint,8,opt,name=sheduled,proto3" json:"sheduled,omitempty"`
+	Scheduled      bool                   `protobuf:"varint,8,opt,name=Scheduled,proto3" json:"Scheduled,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -157,7 +158,7 @@ func (x *Event) GetNotifyleadtime() *durationpb.Duration {
 
 func (x *Event) GetSheduled() bool {
 	if x != nil {
-		return x.Sheduled
+		return x.Scheduled
 	}
 	return false
 }

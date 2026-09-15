@@ -8,7 +8,6 @@ import (
 
 	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models"
-
 	// Postgersql driver.
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"

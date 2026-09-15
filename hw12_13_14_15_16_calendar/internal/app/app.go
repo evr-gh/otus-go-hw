@@ -48,6 +48,6 @@ func (a *App) ListEvents(ctx context.Context) ([]models.Event, error) {
 	return a.storage.ListEvents(ctx)
 }
 
-func (a *App) ListNotSheduledEvents(ctx context.Context) ([]models.Event, error) {
-	return a.storage.ListNotSheduledEvents(ctx)
+func (a *App) ListNotScheduledEvents(ctx context.Context) ([]models.Event, error) {
+	return a.storage.ListNotScheduledEvents(ctx)
 }

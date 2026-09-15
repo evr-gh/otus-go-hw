@@ -55,7 +55,7 @@ func truncateEvents(t *testing.T, storage *Storage) {
 	}
 }
 
-func newEvent(title string, sheduled bool) *models.Event {
+func newEvent(title string, scheduled bool) *models.Event {
 	return &models.Event{
 		Title:          title,
 		Description:    "integration test event",
@@ -63,7 +63,7 @@ func newEvent(title string, sheduled bool) *models.Event {
 		Duration:       time.Hour,
 		Owner:          "integration-test-user",
 		NotifyLeadTime: 15 * time.Minute,
-		Sheduled:       sheduled,
+		Scheduled:      scheduled,
 	}
 }
 
@@ -114,11 +114,11 @@ func assertEventsEqual(t *testing.T, want, got *models.Event) {
 		)
 	}
 
-	if got.Sheduled != want.Sheduled {
+	if got.Scheduled != want.Scheduled {
 		t.Errorf(
-			"Sheduled: ожидалось %v, получено %v",
-			want.Sheduled,
-			got.Sheduled,
+			"Scheduled: ожидалось %v, получено %v",
+			want.Scheduled,
+			got.Scheduled,
 		)
 	}
 }
@@ -183,7 +183,7 @@ func TestStorageUpdateEvent(t *testing.T) {
 	created.Description = "updated description"
 	created.Duration = 30 * time.Minute
 	created.NotifyLeadTime = 3 * time.Hour
-	created.Sheduled = true
+	created.Scheduled = true
 	created.Time = created.Time.Add(5 * time.Minute)
 
 	updated, err := storage.UpdateEvent(ctx, created)
@@ -363,19 +363,19 @@ func TestStorage_ListEvents(t *testing.T) {
 	}
 }
 
-func TestStorage_ListNotSheduledEvents(t *testing.T) {
+func TestStorage_ListNotScheduledEvents(t *testing.T) {
 	storage := newTestStorage(t)
 	ctx := context.Background()
 
 	source := []*models.Event{
-		newEvent("not-sheduled-1", false),
-		newEvent("sheduled", true),
-		newEvent("not-sheduled-2", false),
+		newEvent("not-scheduled-1", false),
+		newEvent("scheduled", true),
+		newEvent("not-scheduled-2", false),
 	}
 
 	expectedTitles := map[string]bool{
-		"not-sheduled-1": true,
-		"not-sheduled-2": true,
+		"not-scheduled-1": true,
+		"not-scheduled-2": true,
 	}
 
 	for _, event := range source {
@@ -384,9 +384,9 @@ func TestStorage_ListNotSheduledEvents(t *testing.T) {
 		}
 	}
 
-	events, err := storage.ListNotSheduledEvents(ctx)
+	events, err := storage.ListNotScheduledEvents(ctx)
 	if err != nil {
-		t.Fatalf("ListNotSheduledEvents вернул ошибку: %v", err)
+		t.Fatalf("ListNotScheduledEvents вернул ошибку: %v", err)
 	}
 
 	if len(events) != len(expectedTitles) {
@@ -398,9 +398,9 @@ func TestStorage_ListNotSheduledEvents(t *testing.T) {
 	}
 
 	for _, event := range events {
-		if event.Sheduled {
+		if event.Scheduled {
 			t.Errorf(
-				"ListNotSheduledEvents вернул запланированное событие ID=%d",
+				"ListNotScheduledEvents вернул запланированное событие ID=%d",
 				event.ID,
 			)
 		}

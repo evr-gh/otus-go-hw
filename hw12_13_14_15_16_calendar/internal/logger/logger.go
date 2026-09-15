@@ -6,28 +6,21 @@ import (
 	"strings"
 	"sync"
 	"time"
-)
 
-type LogLevel string
-
-const (
-	DEBUG   LogLevel = "DEBUG"
-	INFO    LogLevel = "INFO"
-	WARNING LogLevel = "WARNING"
-	ERROR   LogLevel = "ERROR"
+	"github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 )
 
 type Logger struct {
 	outMu  sync.Mutex
-	level  LogLevel
+	level  interfaces.LogLevel
 	writer io.Writer
 }
 
-func New(level LogLevel, writer io.Writer) *Logger {
+func New(level interfaces.LogLevel, writer io.Writer) *Logger {
 	return &Logger{level: level, writer: writer}
 }
 
-func (l *Logger) saveMsg(level LogLevel, template string, a ...any) {
+func (l *Logger) saveMsg(level interfaces.LogLevel, template string, a ...any) {
 	var buildedString strings.Builder
 	fmt.Fprintf(&buildedString, "%s [%s] ", time.Now().UTC().Format("2006-01-02 15:04:05"), level)
 	fmt.Fprintf(&buildedString, template, a...)
@@ -46,26 +39,27 @@ func (l *Logger) Write(p []byte) (n int, err error) {
 }
 
 func (l *Logger) Debug(template string, a ...any) {
-	if l.level == DEBUG {
-		l.saveMsg(DEBUG, template, a...)
+	if l.level == interfaces.DEBUG {
+		l.saveMsg(interfaces.DEBUG, template, a...)
 	}
 }
 
 func (l *Logger) Info(template string, a ...any) {
-	if l.level == INFO || l.level == DEBUG {
-		l.saveMsg(INFO, template, a...)
+	if l.level == interfaces.INFO || l.level == interfaces.DEBUG {
+		l.saveMsg(interfaces.INFO, template, a...)
 	}
 }
 
 func (l *Logger) Warning(template string, a ...any) {
-	if l.level == WARNING || l.level == INFO || l.level == DEBUG {
-		l.saveMsg(WARNING, template, a...)
+	if l.level == interfaces.WARNING || l.level == interfaces.INFO || l.level == interfaces.DEBUG {
+		l.saveMsg(interfaces.WARNING, template, a...)
 	}
 }
 
 func (l *Logger) Error(template string, a ...any) {
-	if l.level == ERROR || l.level == WARNING || l.level == INFO || l.level == DEBUG {
-		l.saveMsg(ERROR, template, a...)
+	if l.level == interfaces.ERROR || l.level == interfaces.WARNING ||
+		l.level == interfaces.INFO || l.level == interfaces.DEBUG {
+		l.saveMsg(interfaces.ERROR, template, a...)
 	}
 }
 

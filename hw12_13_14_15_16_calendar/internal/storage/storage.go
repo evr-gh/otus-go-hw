@@ -1,21 +1,28 @@
 package storage
 
 import (
+	"errors"
+	"fmt"
+
 	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 	memorystorage "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/memory"
 	sqlstorage "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage/sql"
 )
 
-var (
+const (
 	GoMemoryStorage = "memory"
-	PostgresStorage = "postgres"
+	PostgresStorage = "pgx"
 )
 
-func New(storageType string, dsn string) interfaces.Storage {
+var ErrUnknownStorageType = errors.New("неизвестный тип хранилища")
+
+func New(storageType string, dsn string) (interfaces.Storage, error) {
 	switch storageType {
 	case GoMemoryStorage:
-		return memorystorage.New()
+		return memorystorage.New(), nil
+	case PostgresStorage:
+		return sqlstorage.New(storageType, dsn), nil
 	default:
-		return sqlstorage.New(storageType, dsn)
+		return nil, fmt.Errorf("не создано хранилище с типом %q: %w", storageType, ErrUnknownStorageType)
 	}
 }

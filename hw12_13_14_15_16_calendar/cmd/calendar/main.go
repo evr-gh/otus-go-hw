@@ -36,9 +36,33 @@ func main() {
 		os.Exit(1)
 	}
 
-	logg := logger.New(cmdConfig.Logger.Level, os.Stdout)
+	var logFile *os.File
+	var logg *logger.Logger
 
-	calendar := app.New(logg, storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN))
+	if cmdConfig.Logger.File != "" {
+		logFile, err = os.Create(cmdConfig.Logger.File)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Не удалось создать файл для сохранения лога: %v", err)
+			os.Exit(1)
+		}
+		defer logFile.Close()
+		logg = logger.New(cmdConfig.Logger.Level, logFile)
+
+		fmt.Println(cmdConfig.Logger.File)
+	} else {
+		logg = logger.New(cmdConfig.Logger.Level, os.Stdout)
+	}
+
+	stg, err := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		if logFile != nil {
+			logFile.Close()
+		}
+		os.Exit(1) //nolint:gocritic
+	}
+
+	calendar := app.New(logg, stg)
 
 	middleware.Init(logg)
 	server := internalhttp.NewServer(calendar,
@@ -57,7 +81,10 @@ func main() {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		stop()
-		os.Exit(1) //nolint:gocritic
+		if logFile != nil {
+			logFile.Close()
+		}
+		os.Exit(1)
 	}
 	defer calendar.Close()
 
@@ -78,6 +105,9 @@ func main() {
 		logg.Error("Не удалось запустить HTTP сервер: %v", err.Error())
 		calendar.Close()
 		stop()
+		if logFile != nil {
+			logFile.Close()
+		}
 		os.Exit(1)
 	}
 }

@@ -9,8 +9,8 @@ rpc:
   host: 1.2.3.4
   port: 5000
 storage:
-  type: pgx
-  dsn: "postgres://user:userpasswd@localhost:5432/calendar?sslmode=disable&search_path=calendar"
+  type: memory
+  dsn: ""
 logger:
   level: INFO
-  file: /tmp/calendar.log
+  file: /tmp/calendar_memory.log

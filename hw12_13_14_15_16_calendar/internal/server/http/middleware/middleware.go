@@ -34,29 +34,12 @@ func Init(logger interfaces.Logger) *Middleware {
 
 func (m Middleware) Listen(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		StartAt := time.Now()
 		lrw := NewLoggingResponseWriter(w)
+		StartAt := time.Now()
 		handler.ServeHTTP(lrw, r)
-		a := struct {
-			ClientIPAddress string
-			StartAt         time.Time
-			HTTPMethod      string
-			HTTPVersion     string
-			URLPath         string
-			UserAgent       string
-			StatusCode      int
-			Latency         time.Duration
-		}{
-			ClientIPAddress: r.RemoteAddr,
-			StartAt:         StartAt,
-			HTTPMethod:      r.Method,
-			HTTPVersion:     r.Proto,
-			URLPath:         r.URL.Path,
-			UserAgent:       r.UserAgent(),
-			StatusCode:      lrw.StatusCode,
-			Latency:         time.Since(StartAt),
-		}
-		m.logger.Info("%+v", a)
+		duration := time.Since(StartAt)
+		m.logger.Info("Выполнение метода: method=%s[%s]:%s from=%s user_agent=%s time=%s code=%v duration=%s",
+			r.Method, r.Proto, r.URL.Path, r.RemoteAddr, r.UserAgent(), StartAt, lrw.StatusCode, duration)
 	})
 }
 

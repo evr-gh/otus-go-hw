@@ -61,7 +61,7 @@ func TestStorage(t *testing.T) {
 	mock.
 		ExpectQuery(regexp.QuoteMeta(`
 		INSERT INTO events
-			("title", "description", "time", "duration", "owner", "notifyleadtime", "sheduled")
+			("title", "description", "time", "duration", "owner", "notifyleadtime", "scheduled")
 		values($1, $2, $3, $4, $5, $6, $7) RETURNING "id";
 	`)).
 		WithArgs(
@@ -71,7 +71,7 @@ func TestStorage(t *testing.T) {
 			event1.Duration,
 			event1.Owner,
 			event1.NotifyLeadTime,
-			event1.Sheduled,
+			event1.Scheduled,
 		).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id"}).
@@ -89,7 +89,7 @@ func TestStorage(t *testing.T) {
 	mock.
 		ExpectQuery(regexp.QuoteMeta(`
 		INSERT INTO events
-			("title", "description", "time", "duration", "owner", "notifyleadtime", "sheduled")
+			("title", "description", "time", "duration", "owner", "notifyleadtime", "scheduled")
 		values($1, $2, $3, $4, $5, $6, $7) RETURNING "id";
 	`)).
 		WithArgs(
@@ -99,7 +99,7 @@ func TestStorage(t *testing.T) {
 			event2.Duration,
 			event2.Owner,
 			event2.NotifyLeadTime,
-			event2.Sheduled,
+			event2.Scheduled,
 		).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id"}).
@@ -159,7 +159,7 @@ func TestStorage(t *testing.T) {
 	mock.
 		ExpectQuery(regexp.QuoteMeta(`
 		INSERT INTO events
-			("title", "description", "time", "duration", "owner", "notifyleadtime", "sheduled")
+			("title", "description", "time", "duration", "owner", "notifyleadtime", "scheduled")
 		values($1, $2, $3, $4, $5, $6, $7) RETURNING "id";
 	`)).
 		WithArgs(
@@ -169,7 +169,7 @@ func TestStorage(t *testing.T) {
 			event3.Duration,
 			event3.Owner,
 			event3.NotifyLeadTime,
-			event3.Sheduled,
+			event3.Scheduled,
 		).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id"}).
@@ -182,11 +182,11 @@ func TestStorage(t *testing.T) {
 
 	description := "Обновленное описание третьего события"
 	thirdEvent.Description = description
-	thirdEvent.Sheduled = true
+	thirdEvent.Scheduled = true
 
 	mock.
 		ExpectExec(regexp.QuoteMeta(` UPDATE events SET "title"=$1, "description"=$2, "time"=$3, "duration"=$4, 
-	"owner"=$5, "notifyleadtime"=$6, "sheduled"=$7 WHERE id=$8;`)).
+	"owner"=$5, "notifyleadtime"=$6, "scheduled"=$7 WHERE id=$8;`)).
 		WithArgs(
 			event3.Title,
 			event3.Description,
@@ -194,7 +194,7 @@ func TestStorage(t *testing.T) {
 			event3.Duration,
 			event3.Owner,
 			event3.NotifyLeadTime,
-			event3.Sheduled,
+			event3.Scheduled,
 			event3.ID,
 		).
 		WillReturnResult(sqlmock.NewResult(0, 1))
@@ -208,7 +208,7 @@ func TestStorage(t *testing.T) {
 
 	mock.
 		ExpectExec(regexp.QuoteMeta(` UPDATE events SET "title"=$1, "description"=$2, "time"=$3, "duration"=$4, 
-	"owner"=$5, "notifyleadtime"=$6, "sheduled"=$7 WHERE id=$8;`)).
+	"owner"=$5, "notifyleadtime"=$6, "scheduled"=$7 WHERE id=$8;`)).
 		WithArgs(
 			secondEvent.Title,
 			secondEvent.Description,
@@ -216,7 +216,7 @@ func TestStorage(t *testing.T) {
 			secondEvent.Duration,
 			secondEvent.Owner,
 			secondEvent.NotifyLeadTime,
-			secondEvent.Sheduled,
+			secondEvent.Scheduled,
 			secondEvent.ID,
 		).
 		WillReturnResult(sqlmock.NewResult(0, 0))
@@ -231,9 +231,9 @@ func TestStorage(t *testing.T) {
 	require.Equal(t, "не обновлено событие: не передана информация по событию", err.Error())
 	require.Nil(t, nilEvent)
 
-	fieldNames := []string{"id", "title", "description", "time", "duration", "owner", "notifyleadtime", "sheduled"}
+	fieldNames := []string{"id", "title", "description", "time", "duration", "owner", "notifyleadtime", "scheduled"}
 
-	sqlReadEvent := `SELECT "id", "title", "description", "time", "duration", "owner", "notifyleadtime", "sheduled"
+	sqlReadEvent := `SELECT "id", "title", "description", "time", "duration", "owner", "notifyleadtime", "scheduled"
 	FROM events WHERE "id"=$1;`
 
 	mock.
@@ -244,7 +244,7 @@ func TestStorage(t *testing.T) {
 		WillReturnRows(
 			sqlmock.NewRows(fieldNames).
 				AddRow(thirdEvent.ID, thirdEvent.Title, thirdEvent.Description, thirdEvent.Time,
-					thirdEvent.Duration, thirdEvent.Owner, thirdEvent.NotifyLeadTime, thirdEvent.Sheduled),
+					thirdEvent.Duration, thirdEvent.Owner, thirdEvent.NotifyLeadTime, thirdEvent.Scheduled),
 		)
 
 	rEvent, err := storage.ReadEvent(cntx, 3)
@@ -265,16 +265,16 @@ func TestStorage(t *testing.T) {
 	require.Nil(t, rEvent)
 
 	sqlListEvents := `SELECT "id", "title", "description", "time", "duration", "owner", 
-	"notifyleadtime", "sheduled" FROM events;`
+	"notifyleadtime", "scheduled" FROM events;`
 
 	mock.
 		ExpectQuery(regexp.QuoteMeta(sqlListEvents)).
 		WillReturnRows(
 			sqlmock.NewRows(fieldNames).
 				AddRow(firstEvent.ID, firstEvent.Title, firstEvent.Description, firstEvent.Time,
-					firstEvent.Duration, firstEvent.Owner, firstEvent.NotifyLeadTime, firstEvent.Sheduled).
+					firstEvent.Duration, firstEvent.Owner, firstEvent.NotifyLeadTime, firstEvent.Scheduled).
 				AddRow(thirdEvent.ID, thirdEvent.Title, thirdEvent.Description, thirdEvent.Time,
-					thirdEvent.Duration, thirdEvent.Owner, thirdEvent.NotifyLeadTime, thirdEvent.Sheduled),
+					thirdEvent.Duration, thirdEvent.Owner, thirdEvent.NotifyLeadTime, thirdEvent.Scheduled),
 		)
 
 	events, err := storage.ListEvents(cntx)
@@ -287,7 +287,7 @@ func TestStorage(t *testing.T) {
 		WillReturnRows(
 			sqlmock.NewRows(fieldNames).
 				AddRow("ID", firstEvent.Title, firstEvent.Description, firstEvent.Time,
-					firstEvent.Duration, firstEvent.Owner, firstEvent.NotifyLeadTime, firstEvent.Sheduled),
+					firstEvent.Duration, firstEvent.Owner, firstEvent.NotifyLeadTime, firstEvent.Scheduled),
 		)
 	events, err = storage.ListEvents(cntx)
 	require.Error(t, err)
@@ -306,30 +306,30 @@ func TestStorage(t *testing.T) {
 	require.Equal(t, "список событий не получен: db connection error", err.Error())
 	require.Nil(t, events)
 
-	sqlListNotSheduledEvents := `SELECT "id", "title", "description", "time", "duration", "owner", 
-	"notifyleadtime", "sheduled" FROM events WHERE "sheduled" IS NOT TRUE;`
+	sqlListNotScheduledEvents := `SELECT "id", "title", "description", "time", "duration", "owner", 
+	"notifyleadtime", "scheduled" FROM events WHERE "scheduled" IS NOT TRUE;`
 
 	mock.
-		ExpectQuery(regexp.QuoteMeta(sqlListNotSheduledEvents)).
+		ExpectQuery(regexp.QuoteMeta(sqlListNotScheduledEvents)).
 		WillReturnRows(
 			sqlmock.NewRows(fieldNames).
 				AddRow(firstEvent.ID, firstEvent.Title, firstEvent.Description, firstEvent.Time,
-					firstEvent.Duration, firstEvent.Owner, firstEvent.NotifyLeadTime, firstEvent.Sheduled),
+					firstEvent.Duration, firstEvent.Owner, firstEvent.NotifyLeadTime, firstEvent.Scheduled),
 		)
 
-	events, err = storage.ListNotSheduledEvents(cntx)
+	events, err = storage.ListNotScheduledEvents(cntx)
 	require.NoError(t, err)
 	require.Equal(t, 1, len(events))
 	require.Equal(t, []models.Event{*firstEvent}, events)
 
 	mock.
-		ExpectQuery(regexp.QuoteMeta(sqlListNotSheduledEvents)).
+		ExpectQuery(regexp.QuoteMeta(sqlListNotScheduledEvents)).
 		WillReturnRows(
 			sqlmock.NewRows(fieldNames).
 				AddRow("ID", firstEvent.Title, firstEvent.Description, firstEvent.Time,
-					firstEvent.Duration, firstEvent.Owner, firstEvent.NotifyLeadTime, firstEvent.Sheduled),
+					firstEvent.Duration, firstEvent.Owner, firstEvent.NotifyLeadTime, firstEvent.Scheduled),
 		)
-	events, err = storage.ListNotSheduledEvents(cntx)
+	events, err = storage.ListNotScheduledEvents(cntx)
 	require.Error(t, err)
 	require.Equal(t, "список незапланированных событий не получен: sql:"+
 		" Scan error on column index 0, name \"id\":"+
@@ -338,10 +338,10 @@ func TestStorage(t *testing.T) {
 	require.Nil(t, events)
 
 	mock.
-		ExpectQuery(regexp.QuoteMeta(sqlListNotSheduledEvents)).
+		ExpectQuery(regexp.QuoteMeta(sqlListNotScheduledEvents)).
 		WillReturnError(fmt.Errorf("db connection error"))
 
-	events, err = storage.ListNotSheduledEvents(cntx)
+	events, err = storage.ListNotScheduledEvents(cntx)
 	require.Error(t, err)
 	require.Equal(t, "список незапланированных событий не получен: db connection error", err.Error())
 	require.Nil(t, events)

@@ -4,6 +4,15 @@ import (
 	"io"
 )
 
+type LogLevel string
+
+const (
+	DEBUG   LogLevel = "DEBUG"
+	INFO    LogLevel = "INFO"
+	WARNING LogLevel = "WARNING"
+	ERROR   LogLevel = "ERROR"
+)
+
 type Logger interface {
 	io.Writer
 	Debug(msg string, a ...any)

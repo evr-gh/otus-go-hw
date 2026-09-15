@@ -8,13 +8,10 @@ import (
 
 	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models"
-	// mysql driver.
-	_ "github.com/go-sql-driver/mysql"
+
 	// Postgersql driver.
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
-	// sqlite driver .
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type Storage struct {
@@ -52,10 +49,10 @@ func (s *Storage) CreateEvent(ctx context.Context, event *models.Event) (*models
 		return event, fmt.Errorf("не создано событие: %w", interfaces.ErrNoEvent)
 	}
 	sqlStatement := `INSERT INTO events 
-			("title", "description", "time", "duration", "owner", "notifyleadtime", "sheduled") 
+			("title", "description", "time", "duration", "owner", "notifyleadtime", "scheduled") 
 			values($1, $2, $3, $4, $5, $6, $7) RETURNING "id";`
 	err := s.db.QueryRowxContext(ctx, sqlStatement,
-		event.Title, event.Description, event.Time, event.Duration, event.Owner, event.NotifyLeadTime, event.Sheduled,
+		event.Title, event.Description, event.Time, event.Duration, event.Owner, event.NotifyLeadTime, event.Scheduled,
 	).Scan(&event.ID)
 	if err != nil {
 		return nil, fmt.Errorf("не удалось создать событие %q (%v): %w", event.Title, event.Time, err)
@@ -65,11 +62,11 @@ func (s *Storage) CreateEvent(ctx context.Context, event *models.Event) (*models
 
 func (s *Storage) ReadEvent(ctx context.Context, eventID int) (*models.Event, error) {
 	var e models.Event
-	sqlStatement := `SELECT "id", "title", "description", "time", "duration", "owner", "notifyleadtime", "sheduled"
+	sqlStatement := `SELECT "id", "title", "description", "time", "duration", "owner", "notifyleadtime", "scheduled"
 	FROM events WHERE "id"=$1;`
 	err := s.db.QueryRowxContext(ctx, sqlStatement, eventID).Scan(&e.ID,
 		&e.Title, &e.Description, &e.Time, &e.Duration,
-		&e.Owner, &e.NotifyLeadTime, &e.Sheduled)
+		&e.Owner, &e.NotifyLeadTime, &e.Scheduled)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("не получено событие с ID=%v: %w", eventID, interfaces.ErrNoData)
@@ -84,9 +81,9 @@ func (s *Storage) UpdateEvent(ctx context.Context, event *models.Event) (*models
 		return event, fmt.Errorf("не обновлено событие: %w", interfaces.ErrNoEvent)
 	}
 	sqlStatement := `UPDATE events SET "title"=$1, "description"=$2, "time"=$3, "duration"=$4, 
-	"owner"=$5, "notifyleadtime"=$6, "sheduled"=$7 WHERE id=$8;`
+	"owner"=$5, "notifyleadtime"=$6, "scheduled"=$7 WHERE id=$8;`
 	res, err := s.db.ExecContext(ctx, sqlStatement, event.Title, event.Description,
-		event.Time, event.Duration, event.Owner, event.NotifyLeadTime, event.Sheduled,
+		event.Time, event.Duration, event.Owner, event.NotifyLeadTime, event.Scheduled,
 		event.ID)
 	if err != nil {
 		return event, fmt.Errorf("не обновлено событие: %w", err)
@@ -126,7 +123,7 @@ func (s *Storage) listEvents(ctx context.Context, sqlStatement string) ([]models
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&e.ID, &e.Title, &e.Description, &e.Time, &e.Duration, &e.Owner, &e.NotifyLeadTime, &e.Sheduled)
+		err = rows.Scan(&e.ID, &e.Title, &e.Description, &e.Time, &e.Duration, &e.Owner, &e.NotifyLeadTime, &e.Scheduled)
 		if err != nil {
 			return nil, err
 		}
@@ -140,7 +137,7 @@ func (s *Storage) listEvents(ctx context.Context, sqlStatement string) ([]models
 
 func (s *Storage) ListEvents(ctx context.Context) ([]models.Event, error) {
 	sqlStatement := `SELECT "id", "title", "description", "time", "duration", "owner", 
-	"notifyleadtime", "sheduled" FROM events;`
+	"notifyleadtime", "scheduled" FROM events;`
 
 	res, err := s.listEvents(ctx, sqlStatement)
 	if err != nil {
@@ -149,9 +146,9 @@ func (s *Storage) ListEvents(ctx context.Context) ([]models.Event, error) {
 	return res, nil
 }
 
-func (s *Storage) ListNotSheduledEvents(ctx context.Context) ([]models.Event, error) {
+func (s *Storage) ListNotScheduledEvents(ctx context.Context) ([]models.Event, error) {
 	sqlStatement := `SELECT "id", "title", "description", "time", "duration", "owner", 
-	"notifyleadtime", "sheduled" FROM events WHERE "sheduled" IS NOT TRUE;`
+	"notifyleadtime", "scheduled" FROM events WHERE "scheduled" IS NOT TRUE;`
 
 	res, err := s.listEvents(ctx, sqlStatement)
 	if err != nil {

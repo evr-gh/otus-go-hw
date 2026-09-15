@@ -1,9 +1,8 @@
 package config
 
-import (
-	logger "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
-)
+import "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
 
 type LoggerConfig struct {
-	Level logger.LogLevel
+	Level interfaces.LogLevel
+	File  string
 }

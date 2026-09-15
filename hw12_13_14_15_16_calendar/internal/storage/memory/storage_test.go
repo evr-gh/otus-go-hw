@@ -104,7 +104,7 @@ func TestStorage(t *testing.T) {
 
 	description := "Обновленное описание третьего события"
 	thirdEvent.Description = description
-	thirdEvent.Sheduled = true
+	thirdEvent.Scheduled = true
 	uEvent1, err := storage.UpdateEvent(cntx, thirdEvent)
 	require.NoError(t, err)
 	require.Equal(t, thirdEvent, uEvent1)
@@ -149,7 +149,7 @@ func TestStorage(t *testing.T) {
 	require.Equal(t, "не получено событие с ID=4: нет в БД", err.Error())
 	require.Nil(t, rEvent)
 
-	nsEvents, err := storage.ListNotSheduledEvents(cntx)
+	nsEvents, err := storage.ListNotScheduledEvents(cntx)
 	require.NoError(t, err)
 
 	require.Equal(t, 1, len(nsEvents))

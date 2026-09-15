@@ -15,5 +15,5 @@ type Application interface {
 	UpdateEvent(ctx context.Context, event *models.Event) (*models.Event, error)
 	DeleteEvent(ctx context.Context, event *models.Event) (*models.Event, error)
 	ListEvents(ctx context.Context) ([]models.Event, error)
-	ListNotSheduledEvents(ctx context.Context) ([]models.Event, error)
+	ListNotScheduledEvents(ctx context.Context) ([]models.Event, error)
 }

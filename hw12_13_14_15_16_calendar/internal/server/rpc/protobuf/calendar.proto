@@ -1,0 +1,41 @@
+// Calendar protobuf
+syntax = "proto3";
+
+package calendar;
+
+option go_package = "./;calendarrpcapi";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service Application {
+  rpc CreateEvent (Event) returns (Event) {}
+  rpc ReadEvent   (Id)    returns (Event) {}
+  rpc UpdateEvent (Event) returns (Event) {}
+  rpc DeleteEvent (Event) returns (Event) {}
+  rpc ListEvents  (google.protobuf.Empty)  returns (stream Event) {}
+  rpc ListNotSheduledEvents  (google.protobuf.Empty)  returns (stream Event) {}
+}
+
+message Nill {
+}
+
+message Event {
+  int64  id            = 1;
+  string title         = 2;
+  google.protobuf.Timestamp time          = 3;
+  google.protobuf.Duration  duration      = 4;
+  string description   = 5;
+  string owner         = 6;
+  google.protobuf.Duration notifyleadtime = 7;
+  bool  sheduled       = 8;
+} 
+
+message Error {
+  string error = 1;
+}
+
+message Id {
+  int32 id = 1;
+}

@@ -19,7 +19,7 @@ var (
 
 func Instance() *Middleware {
 	if middleware == nil {
-		panic("Middleware was not init by `Init(logger interfaces.Logger)`.")
+		panic("Промежуточное ПО не инициализировано")
 	}
 	return middleware
 }
@@ -27,8 +27,9 @@ func Instance() *Middleware {
 func Init(logger interfaces.Logger) *Middleware {
 	once.Do(func() {
 		middleware = &Middleware{}
-		middleware.logger = logger
 	})
+	middleware.logger = logger
+
 	return middleware
 }
 

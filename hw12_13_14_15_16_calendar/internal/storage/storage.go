@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	MemoryStorage   = "memory"
+	GoMemoryStorage = "memory"
 	PostgresStorage = "pgx"
 )
 
@@ -18,7 +18,7 @@ var ErrUnknownStorageType = errors.New("неизвестный тип храни
 
 func New(storageType string, dsn string) (interfaces.Storage, error) {
 	switch storageType {
-	case MemoryStorage:
+	case GoMemoryStorage:
 		return memorystorage.New(), nil
 	case PostgresStorage:
 		return sqlstorage.New(storageType, dsn), nil

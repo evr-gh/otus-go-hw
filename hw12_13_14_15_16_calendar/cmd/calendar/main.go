@@ -47,8 +47,6 @@ func main() {
 		}
 		defer logFile.Close()
 		logg = logger.New(cmdConfig.Logger.Level, logFile)
-
-		fmt.Println(cmdConfig.Logger.File)
 	} else {
 		logg = logger.New(cmdConfig.Logger.Level, os.Stdout)
 	}

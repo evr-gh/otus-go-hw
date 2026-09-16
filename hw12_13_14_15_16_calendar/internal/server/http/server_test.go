@@ -1,4 +1,4 @@
-package httpserver
+package internalhttp
 
 import (
 	"bytes"
@@ -27,13 +27,13 @@ const (
 )
 
 func TestServerCode(t *testing.T) {
-	const port uint16 = 5021
+	const port uint16 = 8881
 
 	outputInto := &bytes.Buffer{}
 	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
-	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
+	httpServer := NewServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
 	ctx := context.Background()
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
@@ -42,7 +42,7 @@ func TestServerCode(t *testing.T) {
 		}
 	})
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	url := fmt.Sprintf("http://%s:%d/hello", host, port)
 	client := &http.Client{}
@@ -73,12 +73,12 @@ func TestServerCode(t *testing.T) {
 }
 
 func TestServerErrCode(t *testing.T) {
-	const port uint16 = 5022
+	const port uint16 = 8882
 	outputInto := &bytes.Buffer{}
 	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
-	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
+	httpServer := NewServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
 	ctx := context.Background()
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
@@ -87,7 +87,7 @@ func TestServerErrCode(t *testing.T) {
 		}
 	})
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	url := fmt.Sprintf("http://%s:%d/err", host, port)
 	client := &http.Client{}
@@ -111,24 +111,24 @@ func TestServerErrCode(t *testing.T) {
 }
 
 func TestServerStopNotStarted(t *testing.T) {
-	const port uint16 = 5023
+	const port uint16 = 8883
 	outputInto := &bytes.Buffer{}
 	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
-	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
+	httpServer := NewServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
 
 	err := httpServer.Stop(context.Background())
 	require.NoError(t, err)
 }
 
 func TestServerStopNormally(t *testing.T) {
-	const port uint16 = 5024
+	const port uint16 = 8884
 	outputInto := &bytes.Buffer{}
 	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
-	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
+	httpServer := NewServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
 
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
@@ -142,7 +142,7 @@ func TestServerStopNormally(t *testing.T) {
 }
 
 func TestServerStopBySignal(t *testing.T) {
-	const port uint16 = 5025
+	const port uint16 = 8885
 	ctx, ctxCancel := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGINT)
 	defer ctxCancel()
 
@@ -150,7 +150,7 @@ func TestServerStopBySignal(t *testing.T) {
 	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
-	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
+	httpServer := NewServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
 
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
@@ -174,7 +174,7 @@ func TestServerStopBySignal(t *testing.T) {
 }
 
 func TestServerStopBySignalAfterDelay(t *testing.T) {
-	const port uint16 = 5026
+	const port uint16 = 8886
 	ctx, ctxCancel := signal.NotifyContext(context.Background(), syscall.SIGHUP, syscall.SIGINT)
 	defer ctxCancel()
 
@@ -182,7 +182,7 @@ func TestServerStopBySignalAfterDelay(t *testing.T) {
 	logg := logger.New(interfaces.INFO, outputInto)
 	middleware.Init(logg)
 
-	httpServer := NewHTTPServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
+	httpServer := NewServer(nil, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
 
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
@@ -207,7 +207,7 @@ func TestServerStopBySignalAfterDelay(t *testing.T) {
 }
 
 func TestServerStopByCancel(t *testing.T) {
-	const port uint16 = 5027
+	const port uint16 = 8887
 	ctx, ctxCancel := context.WithCancel(context.Background())
 	outputInto := &bytes.Buffer{}
 
@@ -217,7 +217,7 @@ func TestServerStopByCancel(t *testing.T) {
 	srg, err := storage.New("memory", "")
 	require.NoError(t, err)
 	calendarApp := app.New(logg, srg)
-	httpServer := NewHTTPServer(calendarApp, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
+	httpServer := NewServer(calendarApp, host, port, 10*time.Second, 11*time.Second, 12*time.Second, 65536, logg)
 	wg := sync.WaitGroup{}
 	wg.Go(func() {
 		err := httpServer.Start(ctx)
@@ -233,7 +233,6 @@ func TestServerStopByCancel(t *testing.T) {
 		err := httpServer.Stop(shutdownCtx)
 		require.NoError(t, err)
 	})
-
 	time.Sleep(3 * time.Second)
 	ctxCancel()
 	wg.Wait()

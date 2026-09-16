@@ -6,8 +6,8 @@ http:
   writetimeout: "7s"
   maxheaderbytes: 65000
 rpc: 
-  host: 1.2.3.4
-  port: 5000
+  host: 0.0.0.0
+  port: 8889
 storage:
   type: pgx
   dsn: "postgres://user:userpasswd@localhost:5432/calendar?sslmode=disable&search_path=calendar"

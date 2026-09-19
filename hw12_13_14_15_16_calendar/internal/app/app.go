@@ -2,25 +2,52 @@ package app
 
 import (
 	"context"
+
+	interfaces "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/interfaces"
+	models "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/models"
 )
 
-type App struct { // TODO
+type App struct {
+	logger  interfaces.Logger
+	storage interfaces.Storage
 }
 
-type Logger interface { // TODO
+func New(logger interfaces.Logger, storage interfaces.Storage) *App {
+	return &App{logger, storage}
 }
 
-type Storage interface { // TODO
-}
-
-func New(logger Logger, storage Storage) *App {
-	return &App{}
-}
-
-func (a *App) CreateEvent(ctx context.Context, id, title string) error {
-	// TODO
+func (a *App) Start(ctx context.Context) error {
+	err := a.storage.Connect(ctx)
+	if err != nil {
+		return err
+	}
 	return nil
-	// return a.storage.CreateEvent(storage.Event{ID: id, Title: title})
 }
 
-// TODO
+func (a *App) Close() error {
+	return a.storage.Close()
+}
+
+func (a *App) CreateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
+	return a.storage.CreateEvent(ctx, event)
+}
+
+func (a *App) ReadEvent(ctx context.Context, id int) (*models.Event, error) {
+	return a.storage.ReadEvent(ctx, id)
+}
+
+func (a *App) UpdateEvent(ctx context.Context, e *models.Event) (*models.Event, error) {
+	return a.storage.UpdateEvent(ctx, e)
+}
+
+func (a *App) DeleteEvent(ctx context.Context, e *models.Event) (*models.Event, error) {
+	return a.storage.DeleteEvent(ctx, e)
+}
+
+func (a *App) ListEvents(ctx context.Context) ([]models.Event, error) {
+	return a.storage.ListEvents(ctx)
+}
+
+func (a *App) ListNotScheduledEvents(ctx context.Context) ([]models.Event, error) {
+	return a.storage.ListNotScheduledEvents(ctx)
+}

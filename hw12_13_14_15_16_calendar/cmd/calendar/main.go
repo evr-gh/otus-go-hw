@@ -2,43 +2,89 @@ package main
 
 import (
 	"context"
-	"flag"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/app"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/logger"
-	internalhttp "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/server/http"
-	memorystorage "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/memory"
+	app "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/app"
+	logger "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/logger"
+	internalhttp "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http"
+	"github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/server/http/middleware"
+	storage "github.com/evr-gh/otus-go-hw/hw12_13_14_15_calendar/internal/storage"
+	"github.com/spf13/pflag"
 )
 
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "/etc/calendar/config.toml", "Path to configuration file")
+	pflag.StringVar(&configFile, "config", "/etc/calendar/config.yaml", "Path to configuration file")
 }
 
 func main() {
-	flag.Parse()
+	pflag.Parse()
 
-	if flag.Arg(0) == "version" {
+	if pflag.Arg(0) == "version" {
 		printVersion()
 		return
 	}
 
-	config := NewConfig()
-	logg := logger.New(config.Logger.Level)
+	cmdConfig, err := readConfig(configFile)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 
-	storage := memorystorage.New()
-	calendar := app.New(logg, storage)
+	var logFile *os.File
+	var logg *logger.Logger
 
-	server := internalhttp.NewServer(logg, calendar)
+	if cmdConfig.Logger.File != "" {
+		logFile, err = os.Create(cmdConfig.Logger.File)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Не удалось создать файл для сохранения лога: %v", err)
+			os.Exit(1)
+		}
+		defer logFile.Close()
+		logg = logger.New(cmdConfig.Logger.Level, logFile)
+	} else {
+		logg = logger.New(cmdConfig.Logger.Level, os.Stdout)
+	}
 
-	ctx, cancel := signal.NotifyContext(context.Background(),
-		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
-	defer cancel()
+	stg, err := storage.New(cmdConfig.Storage.Type, cmdConfig.Storage.DSN)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		if logFile != nil {
+			logFile.Close()
+		}
+		os.Exit(1) //nolint:gocritic
+	}
+
+	calendar := app.New(logg, stg)
+
+	middleware.Init(logg)
+	server := internalhttp.NewServer(calendar,
+		cmdConfig.HTTP.Host,
+		cmdConfig.HTTP.Port,
+		cmdConfig.HTTP.ReadTimeout,
+		cmdConfig.HTTP.ReadHeaderTimeout,
+		cmdConfig.HTTP.WriteTimeout,
+		cmdConfig.HTTP.MaxHeaderBytes,
+		logg)
+
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+	defer stop()
+
+	err = calendar.Start(ctx)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		stop()
+		if logFile != nil {
+			logFile.Close()
+		}
+		os.Exit(1)
+	}
+	defer calendar.Close()
 
 	go func() {
 		<-ctx.Done()
@@ -47,15 +93,19 @@ func main() {
 		defer cancel()
 
 		if err := server.Stop(ctx); err != nil {
-			logg.Error("failed to stop http server: " + err.Error())
+			logg.Error("Не удалось остановить HTTP сервер: %v", err.Error())
 		}
 	}()
 
-	logg.Info("calendar is running...")
+	logg.Info("Начало работы сервиса \"Календарь\"")
 
 	if err := server.Start(ctx); err != nil {
-		logg.Error("failed to start http server: " + err.Error())
-		cancel()
-		os.Exit(1) //nolint:gocritic
+		logg.Error("Не удалось запустить HTTP сервер: %v", err.Error())
+		calendar.Close()
+		stop()
+		if logFile != nil {
+			logFile.Close()
+		}
+		os.Exit(1)
 	}
 }

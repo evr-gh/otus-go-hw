@@ -92,7 +92,7 @@ protoc-deps:
 	(which protoc > /dev/null) || (curl -fsSL "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip" -o /tmp/protoc.zip && unzip -oq -d $(shell go env GOPATH) /tmp/protoc.zip)
 
 protoc: protoc-deps
-	protoc --go-grpc_out=./internal/server/rpc/rpcapi --go_out=./internal/server/rpc/rpcapi ./internal/server/rpc/protobuf/calendar.proto
+	go generate ./...
 
 generate: protoc
 

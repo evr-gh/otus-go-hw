@@ -4,20 +4,19 @@
 // versions:
 // 	protoc-gen-go v1.36.12
 // 	protoc        v7.36.1
-// source: internal/server/rpc/protobuf/calendar.proto
+// source: protobuf/calendar.proto
 
 package calendarrpcapi
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -35,7 +34,7 @@ type Nill struct {
 
 func (x *Nill) Reset() {
 	*x = Nill{}
-	mi := &file_internal_server_rpc_protobuf_calendar_proto_msgTypes[0]
+	mi := &file_protobuf_calendar_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -47,7 +46,7 @@ func (x *Nill) String() string {
 func (*Nill) ProtoMessage() {}
 
 func (x *Nill) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_server_rpc_protobuf_calendar_proto_msgTypes[0]
+	mi := &file_protobuf_calendar_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,7 +59,7 @@ func (x *Nill) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Nill.ProtoReflect.Descriptor instead.
 func (*Nill) Descriptor() ([]byte, []int) {
-	return file_internal_server_rpc_protobuf_calendar_proto_rawDescGZIP(), []int{0}
+	return file_protobuf_calendar_proto_rawDescGZIP(), []int{0}
 }
 
 type Event struct {
@@ -79,7 +78,7 @@ type Event struct {
 
 func (x *Event) Reset() {
 	*x = Event{}
-	mi := &file_internal_server_rpc_protobuf_calendar_proto_msgTypes[1]
+	mi := &file_protobuf_calendar_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -91,7 +90,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_server_rpc_protobuf_calendar_proto_msgTypes[1]
+	mi := &file_protobuf_calendar_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -104,7 +103,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_internal_server_rpc_protobuf_calendar_proto_rawDescGZIP(), []int{1}
+	return file_protobuf_calendar_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Event) GetId() int64 {
@@ -156,7 +155,7 @@ func (x *Event) GetNotifyleadtime() *durationpb.Duration {
 	return nil
 }
 
-func (x *Event) GetSheduled() bool {
+func (x *Event) GetScheduled() bool {
 	if x != nil {
 		return x.Scheduled
 	}
@@ -172,7 +171,7 @@ type Error struct {
 
 func (x *Error) Reset() {
 	*x = Error{}
-	mi := &file_internal_server_rpc_protobuf_calendar_proto_msgTypes[2]
+	mi := &file_protobuf_calendar_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -184,7 +183,7 @@ func (x *Error) String() string {
 func (*Error) ProtoMessage() {}
 
 func (x *Error) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_server_rpc_protobuf_calendar_proto_msgTypes[2]
+	mi := &file_protobuf_calendar_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -197,7 +196,7 @@ func (x *Error) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Error.ProtoReflect.Descriptor instead.
 func (*Error) Descriptor() ([]byte, []int) {
-	return file_internal_server_rpc_protobuf_calendar_proto_rawDescGZIP(), []int{2}
+	return file_protobuf_calendar_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Error) GetError() string {
@@ -216,7 +215,7 @@ type Id struct {
 
 func (x *Id) Reset() {
 	*x = Id{}
-	mi := &file_internal_server_rpc_protobuf_calendar_proto_msgTypes[3]
+	mi := &file_protobuf_calendar_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -228,7 +227,7 @@ func (x *Id) String() string {
 func (*Id) ProtoMessage() {}
 
 func (x *Id) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_server_rpc_protobuf_calendar_proto_msgTypes[3]
+	mi := &file_protobuf_calendar_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -241,7 +240,7 @@ func (x *Id) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Id.ProtoReflect.Descriptor instead.
 func (*Id) Descriptor() ([]byte, []int) {
-	return file_internal_server_rpc_protobuf_calendar_proto_rawDescGZIP(), []int{3}
+	return file_protobuf_calendar_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Id) GetId() int32 {
@@ -251,12 +250,12 @@ func (x *Id) GetId() int32 {
 	return 0
 }
 
-var File_internal_server_rpc_protobuf_calendar_proto protoreflect.FileDescriptor
+var File_protobuf_calendar_proto protoreflect.FileDescriptor
 
-const file_internal_server_rpc_protobuf_calendar_proto_rawDesc = "" +
+const file_protobuf_calendar_proto_rawDesc = "" +
 	"\n" +
-	"+internal/server/rpc/protobuf/calendar.proto\x12\bcalendar\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x06\n" +
-	"\x04Nill\"\xab\x02\n" +
+	"\x17protobuf/calendar.proto\x12\bcalendar\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x06\n" +
+	"\x04Nill\"\xad\x02\n" +
 	"\x05Event\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12.\n" +
@@ -264,8 +263,8 @@ const file_internal_server_rpc_protobuf_calendar_proto_rawDesc = "" +
 	"\bduration\x18\x04 \x01(\v2\x19.google.protobuf.DurationR\bduration\x12 \n" +
 	"\vdescription\x18\x05 \x01(\tR\vdescription\x12\x14\n" +
 	"\x05owner\x18\x06 \x01(\tR\x05owner\x12A\n" +
-	"\x0enotifyleadtime\x18\a \x01(\v2\x19.google.protobuf.DurationR\x0enotifyleadtime\x12\x1a\n" +
-	"\bsheduled\x18\b \x01(\bR\bsheduled\"\x1d\n" +
+	"\x0enotifyleadtime\x18\a \x01(\v2\x19.google.protobuf.DurationR\x0enotifyleadtime\x12\x1c\n" +
+	"\tScheduled\x18\b \x01(\bR\tScheduled\"\x1d\n" +
 	"\x05Error\x12\x14\n" +
 	"\x05error\x18\x01 \x01(\tR\x05error\"\x14\n" +
 	"\x02Id\x12\x0e\n" +
@@ -280,19 +279,19 @@ const file_internal_server_rpc_protobuf_calendar_proto_rawDesc = "" +
 	"\x15ListNotSheduledEvents\x12\x16.google.protobuf.Empty\x1a\x0f.calendar.Event\"\x000\x01B\x13Z\x11./;calendarrpcapib\x06proto3"
 
 var (
-	file_internal_server_rpc_protobuf_calendar_proto_rawDescOnce sync.Once
-	file_internal_server_rpc_protobuf_calendar_proto_rawDescData []byte
+	file_protobuf_calendar_proto_rawDescOnce sync.Once
+	file_protobuf_calendar_proto_rawDescData []byte
 )
 
-func file_internal_server_rpc_protobuf_calendar_proto_rawDescGZIP() []byte {
-	file_internal_server_rpc_protobuf_calendar_proto_rawDescOnce.Do(func() {
-		file_internal_server_rpc_protobuf_calendar_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_server_rpc_protobuf_calendar_proto_rawDesc), len(file_internal_server_rpc_protobuf_calendar_proto_rawDesc)))
+func file_protobuf_calendar_proto_rawDescGZIP() []byte {
+	file_protobuf_calendar_proto_rawDescOnce.Do(func() {
+		file_protobuf_calendar_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_protobuf_calendar_proto_rawDesc), len(file_protobuf_calendar_proto_rawDesc)))
 	})
-	return file_internal_server_rpc_protobuf_calendar_proto_rawDescData
+	return file_protobuf_calendar_proto_rawDescData
 }
 
-var file_internal_server_rpc_protobuf_calendar_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_internal_server_rpc_protobuf_calendar_proto_goTypes = []any{
+var file_protobuf_calendar_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_protobuf_calendar_proto_goTypes = []any{
 	(*Nill)(nil),                  // 0: calendar.Nill
 	(*Event)(nil),                 // 1: calendar.Event
 	(*Error)(nil),                 // 2: calendar.Error
@@ -301,7 +300,7 @@ var file_internal_server_rpc_protobuf_calendar_proto_goTypes = []any{
 	(*durationpb.Duration)(nil),   // 5: google.protobuf.Duration
 	(*emptypb.Empty)(nil),         // 6: google.protobuf.Empty
 }
-var file_internal_server_rpc_protobuf_calendar_proto_depIdxs = []int32{
+var file_protobuf_calendar_proto_depIdxs = []int32{
 	4, // 0: calendar.Event.time:type_name -> google.protobuf.Timestamp
 	5, // 1: calendar.Event.duration:type_name -> google.protobuf.Duration
 	5, // 2: calendar.Event.notifyleadtime:type_name -> google.protobuf.Duration
@@ -324,26 +323,26 @@ var file_internal_server_rpc_protobuf_calendar_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_internal_server_rpc_protobuf_calendar_proto_init() }
-func file_internal_server_rpc_protobuf_calendar_proto_init() {
-	if File_internal_server_rpc_protobuf_calendar_proto != nil {
+func init() { file_protobuf_calendar_proto_init() }
+func file_protobuf_calendar_proto_init() {
+	if File_protobuf_calendar_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_server_rpc_protobuf_calendar_proto_rawDesc), len(file_internal_server_rpc_protobuf_calendar_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_protobuf_calendar_proto_rawDesc), len(file_protobuf_calendar_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_internal_server_rpc_protobuf_calendar_proto_goTypes,
-		DependencyIndexes: file_internal_server_rpc_protobuf_calendar_proto_depIdxs,
-		MessageInfos:      file_internal_server_rpc_protobuf_calendar_proto_msgTypes,
+		GoTypes:           file_protobuf_calendar_proto_goTypes,
+		DependencyIndexes: file_protobuf_calendar_proto_depIdxs,
+		MessageInfos:      file_protobuf_calendar_proto_msgTypes,
 	}.Build()
-	File_internal_server_rpc_protobuf_calendar_proto = out.File
-	file_internal_server_rpc_protobuf_calendar_proto_goTypes = nil
-	file_internal_server_rpc_protobuf_calendar_proto_depIdxs = nil
+	File_protobuf_calendar_proto = out.File
+	file_protobuf_calendar_proto_goTypes = nil
+	file_protobuf_calendar_proto_depIdxs = nil
 }

@@ -4,7 +4,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v7.36.1
-// source: internal/server/rpc/protobuf/calendar.proto
+// source: protobuf/calendar.proto
 
 package calendarrpcapi
 
@@ -317,5 +317,5 @@ var Application_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "internal/server/rpc/protobuf/calendar.proto",
+	Metadata: "protobuf/calendar.proto",
 }
